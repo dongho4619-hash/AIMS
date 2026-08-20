@@ -1,7 +1,7 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { getOrCreateAccess, hasAdminView } from "../../access";
-import { ensureDatabase, getDb } from "../../../db";
+import { ensureDatabase, getD1, getDb } from "../../../db";
 import { materialUsageEdits, materialUsages, materials, personalInventory } from "../../../db/schema";
 
 const editableFields = ["materialSourceKey", "itemName", "quantity", "storeName", "usedDate"] as const;
@@ -74,29 +74,20 @@ export async function PATCH(request: Request) {
     if (Date.now() >= editDeadline(current.usedDate).getTime()) return Response.json({ error: "수정·취소 가능 시간이 지났습니다. 사용일 오후 4시 이전에만 가능합니다." }, { status: 403 });
     if (payload.action === "cancel") {
       const now = new Date().toISOString();
-      const validCancel = and(eq(materialUsages.id, id), eq(materialUsages.status, "active"));
-      const [, , updatedRows] = await db.batch([
-        db.insert(personalInventory).select(db.select({
-          userKey: materialUsages.userKey,
-          materialSourceKey: materialUsages.materialSourceKey,
-          quantity: materialUsages.quantity,
-          updatedAt: sql<string>`${now}`,
-        }).from(materialUsages).where(validCancel)).onConflictDoUpdate({
-          target: [personalInventory.userKey, personalInventory.materialSourceKey],
-          set: { quantity: sql`${personalInventory.quantity} + excluded.quantity`, updatedAt: now },
-        }),
-        db.insert(materialUsageEdits).select(db.select({
-          usageId: materialUsages.id,
-          editorUserKey: sql<string>`${user.userId}`,
-          changedFields: sql<string>`${JSON.stringify(["status"])}`,
-          previousValues: sql<string>`${JSON.stringify({ status: "active" })}`,
-          newValues: sql<string>`${JSON.stringify({ status: "cancelled" })}`,
-          editedAt: sql<string>`${now}`,
-        }).from(materialUsages).where(validCancel)),
-        db.update(materialUsages).set({ status: "cancelled", updatedAt: now }).where(validCancel).returning(),
+      const d1 = getD1();
+      const [, , updateResult] = await d1.batch([
+        d1.prepare(`INSERT INTO personal_inventory (user_key, material_source_key, quantity, updated_at)
+          SELECT user_key, material_source_key, quantity, ? FROM material_usages WHERE id = ? AND status = 'active'
+          ON CONFLICT(user_key, material_source_key) DO UPDATE SET
+            quantity = personal_inventory.quantity + excluded.quantity, updated_at = excluded.updated_at`).bind(now, id),
+        d1.prepare(`INSERT INTO material_usage_edits (usage_id, editor_user_key, changed_fields, previous_values, new_values, edited_at)
+          SELECT id, ?, ?, ?, ?, ? FROM material_usages WHERE id = ? AND status = 'active'`)
+          .bind(user.userId, JSON.stringify(["status"]), JSON.stringify({ status: "active" }), JSON.stringify({ status: "cancelled" }), now, id),
+        d1.prepare("UPDATE material_usages SET status = 'cancelled', updated_at = ? WHERE id = ? AND status = 'active'").bind(now, id),
       ]);
-      if (!updatedRows[0]) return Response.json({ error: "이미 취소된 사용 내역입니다." }, { status: 409 });
-      return Response.json({ usage: withEditAccess(updatedRows[0], user.userId) });
+      if (!updateResult.meta.changes) return Response.json({ error: "이미 취소된 사용 내역입니다." }, { status: 409 });
+      const [updated] = await db.select().from(materialUsages).where(eq(materialUsages.id, id)).limit(1);
+      return Response.json({ usage: withEditAccess(updated, user.userId) });
     }
     const quantity = Number(payload.quantity);
     const materialSourceKey = String(payload.materialSourceKey ?? "").trim();

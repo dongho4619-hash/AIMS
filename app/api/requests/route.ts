@@ -1,6 +1,6 @@
-import { and, desc, eq, notInArray, sql } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
-import { ensureDatabase, getDb } from "../../../db";
+import { ensureDatabase, getD1, getDb } from "../../../db";
 import { materialRequests, materials, personalInventory, requestEdits } from "../../../db/schema";
 
 const allowedStatuses = ["pending", "approved", "purchasing", "ready", "completed", "rejected"] as const;
@@ -83,31 +83,27 @@ export async function PATCH(request: Request) {
           : await db.select({ sourceKey: materials.sourceKey }).from(materials).where(and(eq(materials.itemName, current.itemName), eq(materials.active, true))).limit(1);
         if (!matchedMaterial) return Response.json({ error: "재고에 반영할 자재를 찾을 수 없습니다." }, { status: 404 });
         const now = new Date().toISOString();
-        const validReceipt = and(eq(materialRequests.id, id), notInArray(materialRequests.status, ["cancelled", "completed", "rejected"]));
-        const [, , updatedRows] = await db.batch([
-          db.insert(personalInventory).select(db.select({
-            userKey: sql<string>`${user.userId}`,
-            materialSourceKey: sql<string>`${matchedMaterial.sourceKey}`,
-            quantity: materialRequests.quantity,
-            updatedAt: sql<string>`${now}`,
-          }).from(materialRequests).where(validReceipt)).onConflictDoUpdate({
-            target: [personalInventory.userKey, personalInventory.materialSourceKey],
-            set: { quantity: sql`${personalInventory.quantity} + excluded.quantity`, updatedAt: now },
-          }),
-          db.insert(requestEdits).select(db.select({
-            requestId: materialRequests.id,
-            editorUserKey: sql<string>`${user.userId}`,
-            changedFields: sql<string>`${JSON.stringify(["status"])}`,
-            previousValues: sql<string>`${JSON.stringify({ status: current.status })}`,
-            newValues: sql<string>`${JSON.stringify({ status: "completed" })}`,
-            editedAt: sql<string>`${now}`,
-          }).from(materialRequests).where(validReceipt)),
-          db.update(materialRequests).set({ status: "completed", requesterKey: user.userId, materialSourceKey: matchedMaterial.sourceKey, updatedAt: now }).where(validReceipt).returning(),
+        const d1 = getD1();
+        const [, , updateResult] = await d1.batch([
+          d1.prepare(`INSERT INTO personal_inventory (user_key, material_source_key, quantity, updated_at)
+            SELECT ?, ?, quantity, ? FROM material_requests
+            WHERE id = ? AND status NOT IN ('cancelled', 'completed', 'rejected')
+            ON CONFLICT(user_key, material_source_key) DO UPDATE SET
+              quantity = personal_inventory.quantity + excluded.quantity, updated_at = excluded.updated_at`)
+            .bind(user.userId, matchedMaterial.sourceKey, now, id),
+          d1.prepare(`INSERT INTO request_edits (request_id, editor_user_key, changed_fields, previous_values, new_values, edited_at)
+            SELECT id, ?, ?, ?, ?, ? FROM material_requests
+            WHERE id = ? AND status NOT IN ('cancelled', 'completed', 'rejected')`)
+            .bind(user.userId, JSON.stringify(["status"]), JSON.stringify({ status: current.status }), JSON.stringify({ status: "completed" }), now, id),
+          d1.prepare(`UPDATE material_requests SET status = 'completed', requester_key = ?, material_source_key = ?, updated_at = ?
+            WHERE id = ? AND status NOT IN ('cancelled', 'completed', 'rejected')`)
+            .bind(user.userId, matchedMaterial.sourceKey, now, id),
         ]);
-        if (!updatedRows[0]) return Response.json({ error: "이미 수령 확인했거나 처리할 수 없는 신청입니다." }, { status: 409 });
+        if (!updateResult.meta.changes) return Response.json({ error: "이미 수령 확인했거나 처리할 수 없는 신청입니다." }, { status: 409 });
+        const [updated] = await db.select().from(materialRequests).where(eq(materialRequests.id, id)).limit(1);
         const [inventoryRow] = await db.select({ materialSourceKey: personalInventory.materialSourceKey, quantity: personalInventory.quantity }).from(personalInventory)
           .where(and(eq(personalInventory.userKey, user.userId), eq(personalInventory.materialSourceKey, matchedMaterial.sourceKey))).limit(1);
-        return Response.json({ request: withEditAccess(updatedRows[0], user.userId, employeeId), inventory: inventoryRow });
+        return Response.json({ request: withEditAccess(updated, user.userId, employeeId), inventory: inventoryRow });
       }
       if (payload.action === "cancel") {
         const [updatedRows] = await db.batch([

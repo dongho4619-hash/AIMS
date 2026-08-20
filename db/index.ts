@@ -10,6 +10,10 @@ function getBinding() {
   return env.DB;
 }
 
+export function getD1() {
+  return getBinding();
+}
+
 export function getDb() {
   return drizzle(getBinding(), { schema });
 }
