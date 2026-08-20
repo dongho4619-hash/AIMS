@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/d1";
 import catalog from "../data/materials.json";
 import * as schema from "./schema";
 
-const CATALOG_VERSION = "anywater-2026-08-20-v1";
+const CATALOG_VERSION = "anywater-2026-08-20-v2";
 
 function getBinding() {
   if (!env.DB) throw new Error("Cloudflare D1 binding `DB` is unavailable.");
