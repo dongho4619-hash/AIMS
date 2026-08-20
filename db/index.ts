@@ -45,6 +45,7 @@ export async function ensureDatabase() {
       quantity INTEGER NOT NULL CHECK (quantity > 0),
       unit TEXT NOT NULL DEFAULT 'EA',
       requester TEXT NOT NULL,
+      requester_key TEXT,
       department TEXT NOT NULL,
       required_date TEXT NOT NULL,
       purpose TEXT NOT NULL DEFAULT '',
@@ -55,6 +56,16 @@ export async function ensureDatabase() {
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_status_created ON material_requests (status, created_at DESC)"),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_department ON material_requests (department)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS request_edits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      request_id INTEGER NOT NULL,
+      editor_user_key TEXT NOT NULL,
+      changed_fields TEXT NOT NULL,
+      previous_values TEXT NOT NULL,
+      new_values TEXT NOT NULL,
+      edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_request_edits_request_time ON request_edits (request_id, edited_at DESC)"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS personal_inventory (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_key TEXT NOT NULL,

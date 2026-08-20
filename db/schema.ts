@@ -26,6 +26,7 @@ export const materialRequests = sqliteTable("material_requests", {
   quantity: integer("quantity").notNull(),
   unit: text("unit").notNull().default("EA"),
   requester: text("requester").notNull(),
+  requesterKey: text("requester_key"),
   department: text("department").notNull(),
   requiredDate: text("required_date").notNull(),
   purpose: text("purpose").notNull().default(""),
@@ -36,6 +37,18 @@ export const materialRequests = sqliteTable("material_requests", {
 }, (table) => [
   index("idx_material_requests_status_created").on(table.status, table.createdAt),
   index("idx_material_requests_department").on(table.department),
+]);
+
+export const requestEdits = sqliteTable("request_edits", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  requestId: integer("request_id").notNull(),
+  editorUserKey: text("editor_user_key").notNull(),
+  changedFields: text("changed_fields").notNull(),
+  previousValues: text("previous_values").notNull(),
+  newValues: text("new_values").notNull(),
+  editedAt: text("edited_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+  index("idx_request_edits_request_time").on(table.requestId, table.editedAt),
 ]);
 
 export const personalInventory = sqliteTable("personal_inventory", {
