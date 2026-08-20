@@ -55,6 +55,14 @@ export async function ensureDatabase() {
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_status_created ON material_requests (status, created_at DESC)"),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_department ON material_requests (department)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS personal_inventory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_key TEXT NOT NULL,
+      material_source_key TEXT NOT NULL,
+      quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_personal_inventory_user_material ON personal_inventory (user_key, material_source_key)"),
   ]);
 
   const current = await d1.prepare("SELECT version FROM catalog_meta WHERE id = 1").first<{ version: string }>();
