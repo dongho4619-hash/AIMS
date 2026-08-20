@@ -62,6 +62,19 @@ export const personalInventory = sqliteTable("personal_inventory", {
   uniqueIndex("idx_personal_inventory_user_material").on(table.userKey, table.materialSourceKey),
 ]);
 
+export const materialReturns = sqliteTable("material_returns", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userKey: text("user_key").notNull(),
+  employeeId: text("employee_id").notNull(),
+  materialSourceKey: text("material_source_key").notNull(),
+  itemName: text("item_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  reason: text("reason").notNull().default(""),
+  returnedAt: text("returned_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+  index("idx_material_returns_user_time").on(table.userKey, table.returnedAt),
+]);
+
 export const appUsers = sqliteTable("app_users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   userKey: text("user_key").notNull().unique(),

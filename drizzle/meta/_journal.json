@@ -57,6 +57,13 @@
       "when": 1787199374805,
       "tag": "0007_odd_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1787204974642,
+      "tag": "0008_common_hannibal_king",
+      "breakpoints": true
     }
   ]
 }

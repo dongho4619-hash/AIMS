@@ -79,6 +79,12 @@ export async function ensureDatabase() {
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_personal_inventory_user_material ON personal_inventory (user_key, material_source_key)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_returns (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
+      material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
+      reason TEXT NOT NULL DEFAULT '', returned_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_returns_user_time ON material_returns (user_key, returned_at DESC)"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS app_users (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE, email TEXT NOT NULL,
       display_name TEXT NOT NULL DEFAULT '', employee_id TEXT NOT NULL DEFAULT '',
