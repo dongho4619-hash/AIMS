@@ -61,3 +61,42 @@ export const personalInventory = sqliteTable("personal_inventory", {
 }, (table) => [
   uniqueIndex("idx_personal_inventory_user_material").on(table.userKey, table.materialSourceKey),
 ]);
+
+export const appUsers = sqliteTable("app_users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userKey: text("user_key").notNull().unique(),
+  email: text("email").notNull(),
+  displayName: text("display_name").notNull().default(""),
+  employeeId: text("employee_id").notNull().default(""),
+  isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
+  canViewAdmin: integer("can_view_admin", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const materialUsages = sqliteTable("material_usages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userKey: text("user_key").notNull(),
+  employeeId: text("employee_id").notNull(),
+  materialSourceKey: text("material_source_key").notNull(),
+  itemName: text("item_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  storeName: text("store_name").notNull(),
+  usedDate: text("used_date").notNull(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+  index("idx_material_usages_user_date").on(table.userKey, table.usedDate),
+]);
+
+export const materialUsageEdits = sqliteTable("material_usage_edits", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  usageId: integer("usage_id").notNull(),
+  editorUserKey: text("editor_user_key").notNull(),
+  changedFields: text("changed_fields").notNull(),
+  previousValues: text("previous_values").notNull(),
+  newValues: text("new_values").notNull(),
+  editedAt: text("edited_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [
+  index("idx_material_usage_edits_usage_time").on(table.usageId, table.editedAt),
+]);

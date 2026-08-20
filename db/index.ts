@@ -75,6 +75,25 @@ export async function ensureDatabase() {
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_personal_inventory_user_material ON personal_inventory (user_key, material_source_key)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS app_users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE, email TEXT NOT NULL,
+      display_name TEXT NOT NULL DEFAULT '', employee_id TEXT NOT NULL DEFAULT '',
+      is_admin INTEGER NOT NULL DEFAULT 0, can_view_admin INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_usages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
+      material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
+      store_name TEXT NOT NULL, used_date TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usages_user_date ON material_usages (user_key, used_date DESC)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_usage_edits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, usage_id INTEGER NOT NULL, editor_user_key TEXT NOT NULL,
+      changed_fields TEXT NOT NULL, previous_values TEXT NOT NULL, new_values TEXT NOT NULL,
+      edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usage_edits_usage_time ON material_usage_edits (usage_id, edited_at DESC)"),
   ]);
 
   const current = await d1.prepare("SELECT version FROM catalog_meta WHERE id = 1").first<{ version: string }>();

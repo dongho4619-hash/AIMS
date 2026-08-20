@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
+import { requireAdminView } from "../../access";
 import { ensureDatabase, getDb } from "../../../db";
 import { materials, personalInventory } from "../../../db/schema";
 
@@ -26,6 +27,7 @@ export async function PATCH(request: Request) {
   try {
     const user = await getChatGPTUser();
     if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
+    try { await requireAdminView(user); } catch { return Response.json({ error: "재고 수정 권한이 필요합니다." }, { status: 403 }); }
     const payload = await request.json() as Record<string, unknown>;
     const materialSourceKey = String(payload.materialSourceKey ?? "").trim();
     const quantity = Number(payload.quantity);
