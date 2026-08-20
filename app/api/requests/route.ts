@@ -12,7 +12,7 @@ function editDeadline(requiredDate: string) {
   return new Date(`${requiredDate}T16:00:00+09:00`);
 }
 function ownsRequest(row: { requesterKey: string | null; requester: string }, userId?: string, employeeId?: string) {
-  return Boolean(userId && (row.requesterKey === userId || (!row.requesterKey && employeeId && row.requester === employeeId)));
+  return Boolean(userId && (row.requesterKey === userId || (employeeId && row.requester === employeeId)));
 }
 function withEditAccess<T extends { requesterKey: string | null; requester: string; requiredDate: string; status: string }>(row: T, userId?: string, employeeId?: string) {
   const deadline = editDeadline(row.requiredDate);
@@ -29,7 +29,8 @@ export async function GET(request: Request) {
     if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
     const employeeId = new URL(request.url).searchParams.get("employeeId")?.trim();
     const rows = await getDb().select().from(materialRequests).orderBy(desc(materialRequests.createdAt), desc(materialRequests.id)).limit(100);
-    return Response.json({ requests: rows.map(row => withEditAccess(row, user?.userId, employeeId)) });
+    const ownRows = rows.filter(row => ownsRequest(row, user.userId, employeeId));
+    return Response.json({ requests: ownRows.map(row => withEditAccess(row, user.userId, employeeId)) });
   } catch (error) { return Response.json({ error: message(error) }, { status: 500 }); }
 }
 
