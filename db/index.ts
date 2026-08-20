@@ -82,9 +82,15 @@ export async function ensureDatabase() {
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_returns (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
       material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
-      reason TEXT NOT NULL DEFAULT '', returned_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      reason TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'pending', received_by TEXT, received_at TEXT,
+      returned_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_returns_user_time ON material_returns (user_key, returned_at DESC)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_returns_status_time ON material_returns (status, returned_at DESC)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS warehouse_inventory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, material_source_key TEXT NOT NULL UNIQUE,
+      quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0), updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
     d1.prepare(`CREATE TABLE IF NOT EXISTS app_users (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE, email TEXT NOT NULL,
       display_name TEXT NOT NULL DEFAULT '', employee_id TEXT NOT NULL DEFAULT '',

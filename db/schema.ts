@@ -70,10 +70,21 @@ export const materialReturns = sqliteTable("material_returns", {
   itemName: text("item_name").notNull(),
   quantity: integer("quantity").notNull(),
   reason: text("reason").notNull().default(""),
+  status: text("status").notNull().default("pending"),
+  receivedBy: text("received_by"),
+  receivedAt: text("received_at"),
   returnedAt: text("returned_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
   index("idx_material_returns_user_time").on(table.userKey, table.returnedAt),
+  index("idx_material_returns_status_time").on(table.status, table.returnedAt),
 ]);
+
+export const warehouseInventory = sqliteTable("warehouse_inventory", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  materialSourceKey: text("material_source_key").notNull().unique(),
+  quantity: integer("quantity").notNull().default(0),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
 
 export const appUsers = sqliteTable("app_users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
