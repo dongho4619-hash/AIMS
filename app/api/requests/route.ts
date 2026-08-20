@@ -1,6 +1,6 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { ensureDatabase, getDb } from "../../../db";
-import { materialRequests } from "../../../db/schema";
+import { materialRequests, materials } from "../../../db/schema";
 
 const allowedStatuses = ["pending", "approved", "purchasing", "ready", "completed", "rejected"] as const;
 
@@ -21,21 +21,23 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const payload = await request.json() as Record<string, unknown>;
-    const itemName = String(payload.itemName ?? "").trim();
+    const materialSourceKey = String(payload.materialSourceKey ?? "").trim();
     const requester = String(payload.requester ?? "").trim();
     const department = String(payload.department ?? "").trim();
     const requiredDate = String(payload.requiredDate ?? "").trim();
     const quantity = Number(payload.quantity);
-    if (!itemName || !requester || !department || !requiredDate || !Number.isInteger(quantity) || quantity < 1) {
+    if (!materialSourceKey || !requester || !department || !requiredDate || !Number.isInteger(quantity) || quantity < 1) {
       return Response.json({ error: "품목, 수량, 신청자, 부서, 필요일을 확인해 주세요." }, { status: 400 });
     }
     await ensureDatabase();
+    const [material] = await getDb().select().from(materials).where(and(eq(materials.sourceKey, materialSourceKey), eq(materials.active, true))).limit(1);
+    if (!material) return Response.json({ error: "자재 목록에서 유효한 품목을 선택해 주세요." }, { status: 400 });
     const now = new Date();
     const requestNumber = `MR-${now.getUTCFullYear().toString().slice(-2)}${(now.getUTCMonth() + 1).toString().padStart(2, "0")}${now.getUTCDate().toString().padStart(2, "0")}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
     const [created] = await getDb().insert(materialRequests).values({
       requestNumber,
-      itemName,
-      specification: String(payload.specification ?? "").trim(),
+      itemName: material.itemName,
+      specification: material.specification || material.abbreviation || material.notes,
       quantity,
       unit: String(payload.unit ?? "EA").trim() || "EA",
       requester,

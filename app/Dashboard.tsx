@@ -8,26 +8,39 @@ type MaterialRequest = {
   requiredDate: string; purpose: string; urgency: string; status: string; createdAt: string;
 };
 
+type CatalogMaterial = {
+  sourceKey: string; itemCode: string | null; itemName: string; abbreviation: string;
+  category: string; specification: string; notes: string;
+};
+
 const statusMeta: Record<string, { label: string; tone: string }> = {
   pending: { label: "승인 대기", tone: "amber" }, approved: { label: "승인 완료", tone: "purple" },
   purchasing: { label: "구매 진행", tone: "blue" }, ready: { label: "출고 대기", tone: "teal" },
   completed: { label: "출고 완료", tone: "green" }, rejected: { label: "반려", tone: "red" },
 };
 
-const emptyForm = { itemName: "", specification: "", quantity: 1, unit: "EA", requester: "", department: "기구설계 1팀", requiredDate: "", purpose: "", urgency: "normal" };
+const emptyForm = { materialSourceKey: "", quantity: 1, unit: "EA", requester: "", department: "기구설계 1팀", requiredDate: "", purpose: "", urgency: "normal" };
+const categories = ["완제품", "반제품", "원자재", "부자재", "설치자재", "공구", "관리자재", "박람회 자재"];
 
 export function Dashboard() {
   const [requests, setRequests] = useState<MaterialRequest[]>([]);
+  const [materials, setMaterials] = useState<CatalogMaterial[]>([]);
   const [loading, setLoading] = useState(true);
+  const [catalogLoading, setCatalogLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const [materialQuery, setMaterialQuery] = useState("");
+  const [materialCategory, setMaterialCategory] = useState("all");
+  const [catalogQuery, setCatalogQuery] = useState("");
+  const [catalogCategory, setCatalogCategory] = useState("all");
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [toast, setToast] = useState("");
 
-  useEffect(() => { void loadRequests(); }, []);
+  useEffect(() => { void loadRequests(); void loadMaterials(); }, []);
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(""), 2600);
@@ -45,6 +58,17 @@ export function Dashboard() {
     finally { setLoading(false); }
   }
 
+  async function loadMaterials() {
+    setCatalogLoading(true);
+    try {
+      const response = await fetch("/api/materials");
+      const data = await response.json() as { materials?: CatalogMaterial[]; error?: string };
+      if (!response.ok) throw new Error(data.error);
+      setMaterials(data.materials ?? []);
+    } catch { setError("자재 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요."); }
+    finally { setCatalogLoading(false); }
+  }
+
   const visibleRequests = useMemo(() => requests.filter((request) => {
     const matchesStatus = filter === "all" || request.status === filter;
     const keyword = query.trim().toLowerCase();
@@ -54,16 +78,33 @@ export function Dashboard() {
 
   const pending = requests.filter((request) => request.status === "pending").length;
   const purchasing = requests.filter((request) => ["approved", "purchasing", "ready"].includes(request.status)).length;
-  const completed = requests.filter((request) => request.status === "completed").length;
+  const selectedMaterial = materials.find((item) => item.sourceKey === form.materialSourceKey);
+  const materialMatches = useMemo(() => {
+    const keyword = materialQuery.trim().toLowerCase();
+    return materials.filter((item) => {
+      const matchesCategory = materialCategory === "all" || item.category === materialCategory;
+      const haystack = `${item.itemCode ?? ""} ${item.itemName} ${item.abbreviation} ${item.specification} ${item.notes}`.toLowerCase();
+      return matchesCategory && (!keyword || haystack.includes(keyword));
+    }).slice(0, 12);
+  }, [materials, materialQuery, materialCategory]);
+  const catalogMatches = useMemo(() => {
+    const keyword = catalogQuery.trim().toLowerCase();
+    return materials.filter((item) => {
+      const matchesCategory = catalogCategory === "all" || item.category === catalogCategory;
+      const haystack = `${item.itemCode ?? ""} ${item.itemName} ${item.abbreviation} ${item.specification} ${item.notes}`.toLowerCase();
+      return matchesCategory && (!keyword || haystack.includes(keyword));
+    });
+  }, [materials, catalogQuery, catalogCategory]);
 
   async function submitRequest(event: FormEvent) {
     event.preventDefault(); setSaving(true); setError("");
+    if (!form.materialSourceKey) { setError("자재 목록에서 신청 품목을 선택해 주세요."); setSaving(false); return; }
     try {
       const response = await fetch("/api/requests", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(form) });
       const data = await response.json() as { request?: MaterialRequest; error?: string };
       if (!response.ok || !data.request) throw new Error(data.error);
       setRequests((current) => [data.request!, ...current]);
-      setForm(emptyForm); setModalOpen(false); setToast("자재 신청이 등록되었습니다.");
+      setForm(emptyForm); setMaterialQuery(""); setMaterialCategory("all"); setModalOpen(false); setToast("자재 신청이 등록되었습니다.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "신청 등록에 실패했습니다."); }
     finally { setSaving(false); }
   }
@@ -87,7 +128,7 @@ export function Dashboard() {
         <nav aria-label="주요 메뉴">
           <button className="nav-item active" onClick={() => setFilter("all")}><span>⌂</span> 대시보드</button>
           <button className="nav-item" onClick={() => setModalOpen(true)}><span>▤</span> 자재 신청</button>
-          <button className="nav-item" onClick={() => { setFilter("completed"); document.querySelector("#requests")?.scrollIntoView(); }}><span>□</span> 출고 현황</button>
+          <button className="nav-item" onClick={() => setCatalogOpen(true)}><span>□</span> 자재 목록</button>
           <button className="nav-item" onClick={() => document.querySelector("#requests")?.scrollIntoView()}><span>↻</span> 신청 내역</button>
         </nav>
         <div className="sidebar-foot">
@@ -103,14 +144,14 @@ export function Dashboard() {
         </header>
 
         <section className="hero-card">
-          <div><span className="eyebrow">빠른 자재 신청</span><h2>필요한 자재를<br />간편하게 신청하세요.</h2><p>품목과 수량을 입력하면 담당자에게 바로 전달됩니다.<br />승인부터 출고까지 한눈에 확인할 수 있어요.</p><button className="dark-button" onClick={() => setModalOpen(true)}>신청서 작성하기 <span>→</span></button></div>
+          <div><span className="eyebrow">애니워터 자재 마스터 연동</span><h2>등록된 자재를 찾아<br />간편하게 신청하세요.</h2><p>엑셀 자재 목록의 품목코드와 규격을 그대로 사용합니다.<br />승인부터 출고까지 한눈에 확인할 수 있어요.</p><button className="dark-button" onClick={() => setModalOpen(true)}>신청서 작성하기 <span>→</span></button></div>
           <div className="hero-visual" aria-hidden="true"><div className="gear">✣</div><div className="box box-back"/><div className="box box-front"><b>MAT</b><span>TECH MATERIAL</span></div><div className="bolt">⬡</div><div className="accent-line" /></div>
         </section>
 
         <section className="stats-grid" aria-label="신청 요약">
           <article><span className="stat-icon amber">⌛</span><div><p>승인 대기</p><strong>{pending}<small>건</small></strong></div><em>{pending ? "확인이 필요해요" : "처리할 신청이 없어요"}</em></article>
           <article><span className="stat-icon blue">↗</span><div><p>처리 진행</p><strong>{purchasing}<small>건</small></strong></div><em>승인·구매·출고 준비</em></article>
-          <article><span className="stat-icon green">✓</span><div><p>출고 완료</p><strong>{completed}<small>건</small></strong></div><em>누적 완료 건수</em></article>
+          <article><span className="stat-icon green">□</span><div><p>등록 자재</p><strong>{catalogLoading ? "—" : materials.length}<small>개</small></strong></div><em>엑셀 8개 분류 기준</em></article>
         </section>
 
         <section className="request-section" id="requests">
@@ -130,11 +171,15 @@ export function Dashboard() {
 
       {modalOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModalOpen(false); }}>
         <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-          <div className="modal-head"><div><span className="eyebrow">NEW REQUEST</span><h2 id="modal-title">자재 신청서</h2><p>필수 항목을 입력하면 자재 담당자에게 전달됩니다.</p></div><button onClick={() => setModalOpen(false)} aria-label="신청서 닫기">×</button></div>
+          <div className="modal-head"><div><span className="eyebrow">NEW REQUEST</span><h2 id="modal-title">자재 신청서</h2><p>애니워터 자재 목록에서 품목을 선택해 주세요.</p></div><button onClick={() => setModalOpen(false)} aria-label="신청서 닫기">×</button></div>
           <form onSubmit={submitRequest}>
             <div className="form-grid">
-              <label className="wide">품목명 <b>*</b><input required value={form.itemName} onChange={(e) => setForm({ ...form, itemName: e.target.value })} placeholder="예: 스테인리스 육각볼트" /></label>
-              <label className="wide">규격 / 모델명<input value={form.specification} onChange={(e) => setForm({ ...form, specification: e.target.value })} placeholder="예: M8 × 30, SUS304" /></label>
+              <div className="wide material-picker">
+                <div className="picker-label"><span>신청 품목 <b>*</b></span><small>엑셀 기준 {materials.length.toLocaleString()}개 품목</small></div>
+                <div className="picker-tools"><select value={materialCategory} onChange={(e) => setMaterialCategory(e.target.value)} aria-label="자재 분류"><option value="all">전체 분류</option>{categories.map((category) => <option key={category}>{category}</option>)}</select><label className="picker-search"><span>⌕</span><input value={materialQuery} onChange={(e) => setMaterialQuery(e.target.value)} placeholder="품목코드·품목명·약어 검색" aria-label="신청 품목 검색" /></label></div>
+                {selectedMaterial && <div className="selected-material"><span className="category-badge">{selectedMaterial.category}</span><div><strong>{selectedMaterial.itemName}</strong><small>{[selectedMaterial.itemCode, selectedMaterial.abbreviation, selectedMaterial.specification].filter(Boolean).join(" · ") || "품목코드 미지정"}</small></div><button type="button" onClick={() => setForm({ ...form, materialSourceKey: "" })}>변경</button></div>}
+                {!selectedMaterial && <div className="material-results" role="listbox" aria-label="자재 검색 결과">{catalogLoading ? <div className="picker-empty"><span className="spinner" />자재 목록을 불러오는 중입니다.</div> : materialMatches.length === 0 ? <div className="picker-empty">검색된 자재가 없습니다.</div> : materialMatches.map((item) => <button type="button" role="option" aria-selected="false" key={item.sourceKey} onClick={() => { setForm({ ...form, materialSourceKey: item.sourceKey }); setMaterialQuery(""); }}><span className="category-badge">{item.category}</span><div><strong>{item.itemName}</strong><small>{[item.itemCode, item.abbreviation, item.specification].filter(Boolean).join(" · ") || "품목코드 미지정"}</small></div><span>선택</span></button>)}</div>}
+              </div>
               <label>수량 <b>*</b><input required min="1" type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })} /></label>
               <label>단위<select value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })}><option>EA</option><option>SET</option><option>BOX</option><option>M</option><option>KG</option></select></label>
               <label>신청자 <b>*</b><input required value={form.requester} onChange={(e) => setForm({ ...form, requester: e.target.value })} placeholder="이름" /></label>
@@ -146,6 +191,16 @@ export function Dashboard() {
             {error && <p className="form-error">{error}</p>}
             <div className="modal-actions"><button type="button" className="cancel-button" onClick={() => setModalOpen(false)}>취소</button><button className="primary-button" disabled={saving}>{saving ? "등록 중…" : "신청 등록하기"}</button></div>
           </form>
+        </section>
+      </div>}
+      {catalogOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setCatalogOpen(false); }}>
+        <section className="modal catalog-modal" role="dialog" aria-modal="true" aria-labelledby="catalog-title">
+          <div className="modal-head"><div><span className="eyebrow">MATERIAL CATALOG</span><h2 id="catalog-title">애니워터 자재 목록</h2><p>원본 엑셀의 8개 품목 분류, 총 {materials.length.toLocaleString()}개 자재입니다.</p></div><button onClick={() => setCatalogOpen(false)} aria-label="자재 목록 닫기">×</button></div>
+          <div className="catalog-body">
+            <div className="catalog-filters"><label className="picker-search"><span>⌕</span><input value={catalogQuery} onChange={(e) => setCatalogQuery(e.target.value)} placeholder="코드·품목명·약어·규격 검색" aria-label="자재 목록 검색" /></label><select value={catalogCategory} onChange={(e) => setCatalogCategory(e.target.value)} aria-label="자재 목록 분류"><option value="all">전체 분류</option>{categories.map((category) => <option key={category}>{category}</option>)}</select></div>
+            <div className="catalog-summary"><span>검색 결과 <strong>{catalogMatches.length.toLocaleString()}</strong>개</span><span>원본: 애니워터 재고 관리</span></div>
+            <div className="catalog-table"><div className="catalog-head"><span>분류</span><span>품목코드</span><span>품목명</span><span>약어 / 규격</span><span /></div>{catalogLoading ? <div className="picker-empty"><span className="spinner" />자재 목록을 불러오는 중입니다.</div> : catalogMatches.length === 0 ? <div className="picker-empty">검색된 자재가 없습니다.</div> : catalogMatches.map((item) => <div className="catalog-row" key={item.sourceKey}><span className="category-badge">{item.category}</span><code>{item.itemCode || "—"}</code><strong>{item.itemName}</strong><small>{[item.abbreviation, item.specification, item.notes].filter(Boolean).join(" · ") || "—"}</small><button onClick={() => { setForm({ ...form, materialSourceKey: item.sourceKey }); setCatalogOpen(false); setModalOpen(true); }}>신청</button></div>)}</div>
+          </div>
         </section>
       </div>}
       {toast && <div className="toast" role="status">✓ {toast}</div>}
