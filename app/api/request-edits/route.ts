@@ -1,6 +1,5 @@
 import { desc, eq } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
-import { requireAdminView } from "../../access";
 import { ensureDatabase, getDb } from "../../../db";
 import { materialRequests, requestEdits } from "../../../db/schema";
 
@@ -8,7 +7,6 @@ export async function GET(request: Request) {
   try {
     const user = await getChatGPTUser();
     if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
-    try { await requireAdminView(user, new URL(request.url).searchParams.get("employeeId") ?? ""); } catch { return Response.json({ error: "변경 내역 열람 권한이 필요합니다." }, { status: 403 }); }
     const requestId = Number(new URL(request.url).searchParams.get("requestId"));
     const employeeId = new URL(request.url).searchParams.get("employeeId")?.trim();
     if (!Number.isInteger(requestId) || requestId < 1) return Response.json({ error: "신청 건을 확인해 주세요." }, { status: 400 });

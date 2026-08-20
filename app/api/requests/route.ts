@@ -1,6 +1,5 @@
 import { and, desc, eq, notInArray, sql } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
-import { requireAdminView } from "../../access";
 import { ensureDatabase, getDb } from "../../../db";
 import { materialRequests, materials, personalInventory, requestEdits } from "../../../db/schema";
 
@@ -29,7 +28,6 @@ export async function GET(request: Request) {
     const user = await getChatGPTUser();
     if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
     const employeeId = new URL(request.url).searchParams.get("employeeId")?.trim();
-    try { await requireAdminView(user, employeeId); } catch { return Response.json({ error: "관리 기능 열람 권한이 필요합니다." }, { status: 403 }); }
     const rows = await getDb().select().from(materialRequests).orderBy(desc(materialRequests.createdAt), desc(materialRequests.id)).limit(100);
     return Response.json({ requests: rows.map(row => withEditAccess(row, user?.userId, employeeId)) });
   } catch (error) { return Response.json({ error: message(error) }, { status: 500 }); }
@@ -42,7 +40,6 @@ export async function POST(request: Request) {
     const payload = await request.json() as Record<string, unknown>;
     const materialSourceKey = String(payload.materialSourceKey ?? "").trim();
     const requester = String(payload.requester ?? "").trim();
-    try { await requireAdminView(user, requester); } catch { return Response.json({ error: "자재 신청 권한이 필요합니다." }, { status: 403 }); }
     const department = String(payload.department ?? "").trim();
     const requiredDate = String(payload.requiredDate ?? "").trim();
     const quantity = Number(payload.quantity);
@@ -71,7 +68,6 @@ export async function PATCH(request: Request) {
     if (payload.action === "edit" || payload.action === "cancel" || payload.action === "receive") {
       const user = await getChatGPTUser();
       if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
-      try { await requireAdminView(user, String(payload.employeeId ?? "")); } catch { return Response.json({ error: "관리 기능 권한이 필요합니다." }, { status: 403 }); }
       const [current] = await getDb().select().from(materialRequests).where(eq(materialRequests.id, id)).limit(1);
       if (!current) return Response.json({ error: "신청 건을 찾을 수 없습니다." }, { status: 404 });
       const employeeId = String(payload.employeeId ?? "").trim();
@@ -138,7 +134,6 @@ export async function PATCH(request: Request) {
 
     const user = await getChatGPTUser();
     if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
-    try { await requireAdminView(user); } catch { return Response.json({ error: "관리 기능 권한이 필요합니다." }, { status: 403 }); }
     const status = String(payload.status ?? "");
     if (!allowedStatuses.includes(status as typeof allowedStatuses[number])) return Response.json({ error: "변경할 상태를 확인해 주세요." }, { status: 400 });
     const [updated] = await getDb().update(materialRequests).set({ status, updatedAt: new Date().toISOString() }).where(eq(materialRequests.id, id)).returning();
