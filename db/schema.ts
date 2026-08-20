@@ -21,6 +21,7 @@ export const materials = sqliteTable("materials", {
 export const materialRequests = sqliteTable("material_requests", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   requestNumber: text("request_number").notNull().unique(),
+  materialSourceKey: text("material_source_key"),
   itemName: text("item_name").notNull(),
   specification: text("specification").notNull().default(""),
   quantity: integer("quantity").notNull(),

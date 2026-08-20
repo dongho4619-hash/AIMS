@@ -1,7 +1,7 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, notInArray, sql } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { ensureDatabase, getDb } from "../../../db";
-import { materialRequests, materials, requestEdits } from "../../../db/schema";
+import { materialRequests, materials, personalInventory, requestEdits } from "../../../db/schema";
 
 const allowedStatuses = ["pending", "approved", "purchasing", "ready", "completed", "rejected"] as const;
 const editableFields = ["quantity", "unit", "requiredDate", "purpose"] as const;
@@ -17,7 +17,8 @@ function ownsRequest(row: { requesterKey: string | null; requester: string }, us
 function withEditAccess<T extends { requesterKey: string | null; requester: string; requiredDate: string; status: string }>(row: T, userId?: string, employeeId?: string) {
   const deadline = editDeadline(row.requiredDate);
   const editableStatus = !["cancelled", "completed", "rejected"].includes(row.status);
-  return { ...row, canEdit: ownsRequest(row, userId, employeeId) && editableStatus && Date.now() < deadline.getTime(), editableUntil: deadline.toISOString() };
+  const owned = ownsRequest(row, userId, employeeId);
+  return { ...row, canEdit: owned && editableStatus && Date.now() < deadline.getTime(), canReceive: owned && editableStatus, editableUntil: deadline.toISOString() };
 }
 function validRequiredDate(value: string) { return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(editDeadline(value).getTime()); }
 
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     const now = new Date();
     const requestNumber = `MR-${now.getUTCFullYear().toString().slice(-2)}${(now.getUTCMonth() + 1).toString().padStart(2, "0")}${now.getUTCDate().toString().padStart(2, "0")}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
     const [created] = await getDb().insert(materialRequests).values({
-      requestNumber, itemName: material.itemName, specification: material.specification || material.abbreviation || material.notes,
+      requestNumber, materialSourceKey: material.sourceKey, itemName: material.itemName, specification: material.specification || material.abbreviation || material.notes,
       quantity, unit: String(payload.unit ?? "EA").trim() || "EA", requester, requesterKey: user.userId, department, requiredDate,
       purpose: String(payload.purpose ?? "").trim(), urgency: payload.urgency === "urgent" ? "urgent" : "normal",
     }).returning();
@@ -63,7 +64,7 @@ export async function PATCH(request: Request) {
     if (!Number.isInteger(id) || id < 1) return Response.json({ error: "신청 건을 확인해 주세요." }, { status: 400 });
     await ensureDatabase();
 
-    if (payload.action === "edit" || payload.action === "cancel") {
+    if (payload.action === "edit" || payload.action === "cancel" || payload.action === "receive") {
       const user = await getChatGPTUser();
       if (!user) return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
       const [current] = await getDb().select().from(materialRequests).where(eq(materialRequests.id, id)).limit(1);
@@ -71,9 +72,41 @@ export async function PATCH(request: Request) {
       const employeeId = String(payload.employeeId ?? "").trim();
       if (!ownsRequest(current, user.userId, employeeId)) return Response.json({ error: "본인이 신청한 건만 수정하거나 취소할 수 있습니다." }, { status: 403 });
       if (["cancelled", "completed", "rejected"].includes(current.status)) return Response.json({ error: "이미 취소되었거나 처리가 끝난 신청입니다." }, { status: 400 });
-      if (Date.now() >= editDeadline(current.requiredDate).getTime()) return Response.json({ error: "수정·취소 가능 시간이 지났습니다. 필요일 오후 4시 이전에만 가능합니다." }, { status: 403 });
+      if (payload.action !== "receive" && Date.now() >= editDeadline(current.requiredDate).getTime()) return Response.json({ error: "수정·취소 가능 시간이 지났습니다. 필요일 오후 4시 이전에만 가능합니다." }, { status: 403 });
 
       const db = getDb();
+      if (payload.action === "receive") {
+        const [matchedMaterial] = current.materialSourceKey
+          ? await db.select({ sourceKey: materials.sourceKey }).from(materials).where(and(eq(materials.sourceKey, current.materialSourceKey), eq(materials.active, true))).limit(1)
+          : await db.select({ sourceKey: materials.sourceKey }).from(materials).where(and(eq(materials.itemName, current.itemName), eq(materials.active, true))).limit(1);
+        if (!matchedMaterial) return Response.json({ error: "재고에 반영할 자재를 찾을 수 없습니다." }, { status: 404 });
+        const now = new Date().toISOString();
+        const validReceipt = and(eq(materialRequests.id, id), notInArray(materialRequests.status, ["cancelled", "completed", "rejected"]));
+        const [, , updatedRows] = await db.batch([
+          db.insert(personalInventory).select(db.select({
+            userKey: sql<string>`${user.userId}`,
+            materialSourceKey: sql<string>`${matchedMaterial.sourceKey}`,
+            quantity: materialRequests.quantity,
+            updatedAt: sql<string>`${now}`,
+          }).from(materialRequests).where(validReceipt)).onConflictDoUpdate({
+            target: [personalInventory.userKey, personalInventory.materialSourceKey],
+            set: { quantity: sql`${personalInventory.quantity} + excluded.quantity`, updatedAt: now },
+          }),
+          db.insert(requestEdits).select(db.select({
+            requestId: materialRequests.id,
+            editorUserKey: sql<string>`${user.userId}`,
+            changedFields: sql<string>`${JSON.stringify(["status"])}`,
+            previousValues: sql<string>`${JSON.stringify({ status: current.status })}`,
+            newValues: sql<string>`${JSON.stringify({ status: "completed" })}`,
+            editedAt: sql<string>`${now}`,
+          }).from(materialRequests).where(validReceipt)),
+          db.update(materialRequests).set({ status: "completed", requesterKey: user.userId, materialSourceKey: matchedMaterial.sourceKey, updatedAt: now }).where(validReceipt).returning(),
+        ]);
+        if (!updatedRows[0]) return Response.json({ error: "이미 수령 확인했거나 처리할 수 없는 신청입니다." }, { status: 409 });
+        const [inventoryRow] = await db.select({ materialSourceKey: personalInventory.materialSourceKey, quantity: personalInventory.quantity }).from(personalInventory)
+          .where(and(eq(personalInventory.userKey, user.userId), eq(personalInventory.materialSourceKey, matchedMaterial.sourceKey))).limit(1);
+        return Response.json({ request: withEditAccess(updatedRows[0], user.userId, employeeId), inventory: inventoryRow });
+      }
       if (payload.action === "cancel") {
         const [updatedRows] = await db.batch([
           db.update(materialRequests).set({ status: "cancelled", requesterKey: user.userId, updatedAt: new Date().toISOString() }).where(eq(materialRequests.id, id)).returning(),

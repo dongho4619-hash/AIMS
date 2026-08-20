@@ -40,6 +40,7 @@ export async function ensureDatabase() {
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       request_number TEXT NOT NULL UNIQUE,
+      material_source_key TEXT,
       item_name TEXT NOT NULL,
       specification TEXT NOT NULL DEFAULT '',
       quantity INTEGER NOT NULL CHECK (quantity > 0),
