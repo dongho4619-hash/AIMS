@@ -4,7 +4,7 @@ import { ensureDatabase, getDb } from "../../../db";
 import { materialRequests, materials, requestEdits } from "../../../db/schema";
 
 const allowedStatuses = ["pending", "approved", "purchasing", "ready", "completed", "rejected"] as const;
-const editableFields = ["quantity", "unit", "department", "requiredDate", "purpose", "urgency"] as const;
+const editableFields = ["quantity", "unit", "requiredDate", "purpose"] as const;
 type EditableField = typeof editableFields[number];
 
 function message(error: unknown) { return error instanceof Error ? error.message : "요청을 처리하지 못했습니다."; }
@@ -83,8 +83,8 @@ export async function PATCH(request: Request) {
       }
 
       const next = {
-        quantity: Number(payload.quantity), unit: String(payload.unit ?? "").trim(), department: String(payload.department ?? "").trim(),
-        requiredDate: String(payload.requiredDate ?? "").trim(), purpose: String(payload.purpose ?? "").trim(), urgency: payload.urgency === "urgent" ? "urgent" : "normal",
+        quantity: Number(payload.quantity), unit: String(payload.unit ?? "").trim(), department: current.department,
+        requiredDate: String(payload.requiredDate ?? "").trim(), purpose: String(payload.purpose ?? "").trim(), urgency: current.urgency,
       };
       if (!Number.isInteger(next.quantity) || next.quantity < 1 || !next.unit || !next.department || !validRequiredDate(next.requiredDate)) return Response.json({ error: "수량, 단위, 부서, 필요일을 확인해 주세요." }, { status: 400 });
       const previous = Object.fromEntries(editableFields.map(field => [field, current[field]])) as Record<EditableField, unknown>;
