@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { ensureDatabase, getDb } from "../../../db";
 import { materials, personalInventory } from "../../../db/schema";
@@ -29,7 +29,8 @@ export async function PATCH(request: Request) {
     const payload = await request.json() as Record<string, unknown>;
     const materialSourceKey = String(payload.materialSourceKey ?? "").trim();
     const quantity = Number(payload.quantity);
-    if (!materialSourceKey || !Number.isInteger(quantity) || quantity < 0) {
+    const isInbound = payload.action === "add";
+    if (!materialSourceKey || !Number.isInteger(quantity) || (isInbound ? quantity < 1 : quantity < 0)) {
       return Response.json({ error: "자재와 보유 수량을 확인해 주세요." }, { status: 400 });
     }
     await ensureDatabase();
@@ -42,7 +43,7 @@ export async function PATCH(request: Request) {
       quantity,
     }).onConflictDoUpdate({
       target: [personalInventory.userKey, personalInventory.materialSourceKey],
-      set: { quantity, updatedAt: new Date().toISOString() },
+      set: { quantity: isInbound ? sql`${personalInventory.quantity} + ${quantity}` : quantity, updatedAt: new Date().toISOString() },
     }).returning({ materialSourceKey: personalInventory.materialSourceKey, quantity: personalInventory.quantity });
     return Response.json({ inventory: saved });
   } catch (error) {
