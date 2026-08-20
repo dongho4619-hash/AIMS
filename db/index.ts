@@ -71,6 +71,7 @@ export async function ensureDatabase() {
       edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_request_edits_request_time ON request_edits (request_id, edited_at DESC)"),
+    d1.prepare("CREATE TRIGGER IF NOT EXISTS prevent_request_edits_delete BEFORE DELETE ON request_edits BEGIN SELECT RAISE(ABORT, 'request edit history is immutable'); END"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS personal_inventory (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_key TEXT NOT NULL,
@@ -110,6 +111,7 @@ export async function ensureDatabase() {
       edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usage_edits_usage_time ON material_usage_edits (usage_id, edited_at DESC)"),
+    d1.prepare("CREATE TRIGGER IF NOT EXISTS prevent_material_usage_edits_delete BEFORE DELETE ON material_usage_edits BEGIN SELECT RAISE(ABORT, 'usage edit history is immutable'); END"),
   ]);
 
   const current = await d1.prepare("SELECT version FROM catalog_meta WHERE id = 1").first<{ version: string }>();
