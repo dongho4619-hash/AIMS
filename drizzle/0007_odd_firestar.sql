@@ -1,0 +1,1 @@
+ALTER TABLE `material_usages` ADD `status` text DEFAULT 'active' NOT NULL;

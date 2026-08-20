@@ -83,6 +83,7 @@ export const materialUsages = sqliteTable("material_usages", {
   quantity: integer("quantity").notNull(),
   storeName: text("store_name").notNull(),
   usedDate: text("used_date").notNull(),
+  status: text("status").notNull().default("active"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [

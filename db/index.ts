@@ -84,7 +84,7 @@ export async function ensureDatabase() {
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_usages (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
       material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
-      store_name TEXT NOT NULL, used_date TEXT NOT NULL,
+      store_name TEXT NOT NULL, used_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'active',
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usages_user_date ON material_usages (user_key, used_date DESC)"),
