@@ -10,12 +10,15 @@ export const materials = sqliteTable("materials", {
   category: text("category").notNull(),
   specification: text("specification").notNull().default(""),
   notes: text("notes").notNull().default(""),
-  sourceRow: integer("source_row").notNull(),
+  unit: text("unit").notNull().default("EA"),
+  minimumStock: integer("minimum_stock").notNull().default(0),
   active: integer("active", { mode: "boolean" }).notNull().default(true),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  sortOrder: integer("sort_order").notNull().default(999999),
 }, (table) => [
   index("idx_materials_category_name").on(table.category, table.itemName),
   index("idx_materials_item_code").on(table.itemCode),
+  index("idx_materials_category_sort").on(table.category, table.sortOrder),
 ]);
 
 export const materialRequests = sqliteTable("material_requests", {
@@ -64,25 +67,30 @@ export const personalInventory = sqliteTable("personal_inventory", {
 
 export const materialReturns = sqliteTable("material_returns", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  userKey: text("user_key").notNull(),
-  employeeId: text("employee_id").notNull(),
+  returnNumber: text("return_number").notNull().unique(),
+  requesterKey: text("requester_key").notNull(),
+  requesterName: text("requester_name").notNull(),
+  department: text("department").notNull(),
   materialSourceKey: text("material_source_key").notNull(),
   itemName: text("item_name").notNull(),
   quantity: integer("quantity").notNull(),
+  unit: text("unit").notNull().default("EA"),
   reason: text("reason").notNull().default(""),
   status: text("status").notNull().default("pending"),
-  receivedBy: text("received_by"),
-  receivedAt: text("received_at"),
-  returnedAt: text("returned_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  rejectionReason: text("rejection_reason").notNull().default(""),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  decidedAt: text("decided_at"),
+  decidedBy: text("decided_by"),
 }, (table) => [
-  index("idx_material_returns_user_time").on(table.userKey, table.returnedAt),
-  index("idx_material_returns_status_time").on(table.status, table.returnedAt),
+  index("idx_returns_status_created").on(table.status, table.createdAt),
+  index("idx_returns_requester_created").on(table.requesterKey, table.createdAt),
 ]);
 
-export const warehouseInventory = sqliteTable("warehouse_inventory", {
+export const inventory = sqliteTable("inventory", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   materialSourceKey: text("material_source_key").notNull().unique(),
-  quantity: integer("quantity").notNull().default(0),
+  onHand: integer("on_hand").notNull().default(0),
+  reserved: integer("reserved").notNull().default(0),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -91,6 +99,16 @@ export const appUsers = sqliteTable("app_users", {
   userKey: text("user_key").notNull().unique(),
   email: text("email").notNull(),
   displayName: text("display_name").notNull().default(""),
+  department: text("department").notNull().default("기술부"),
+  role: text("role").notNull().default("user"),
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const userProfiles = sqliteTable("user_profiles", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userKey: text("user_key").notNull().unique(),
   employeeId: text("employee_id").notNull().default(""),
   isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
   canViewAdmin: integer("can_view_admin", { mode: "boolean" }).notNull().default(false),

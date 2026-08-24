@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Screen = "login" | "home" | "inbound" | "return" | "audit" | "usage" | "usageReview" | "permissions" | "request" | "requestReview" | "inventory" | "catalog" | "history";
+type AppScreen = Exclude<Screen, "login">;
 type MaterialRequest = { id:number; requestNumber:string; materialSourceKey?:string|null; itemName:string; specification:string; quantity:number; unit:string; requester:string; department:string; requiredDate:string; purpose:string; urgency:string; status:string; createdAt:string; canEdit?:boolean; canReceive?:boolean; editableUntil?:string };
 type CatalogMaterial = { sourceKey:string; itemCode:string|null; itemName:string; abbreviation:string; category:string; specification:string; notes:string };
 type RequestEdit = { id:number; changedFields:string[]; previousValues:Record<string,unknown>; newValues:Record<string,unknown>; editedAt:string };
@@ -31,10 +32,25 @@ const statusMeta: Record<string,{label:string;tone:string}> = {
 const editFieldLabels:Record<string,string>={quantity:"수량",unit:"단위",department:"부서",requiredDate:"필요일",purpose:"출고 사유",urgency:"처리 구분",status:"신청 상태"};
 const usageEditFieldLabels:Record<string,string>={itemName:"품목명",quantity:"수량",storeName:"매장명",usedDate:"사용일",status:"처리 상태"};
 const defaultForm = { materialSourceKey:"", quantity:1, unit:"EA", requester:"", department:"기술부", requiredDate:"", purpose:"", urgency:"normal" };
+const screenMeta: Record<AppScreen, { label: string; description: string }> = {
+  home: { label: "대시보드", description: "오늘 필요한 핵심 업무로 바로 이동합니다." },
+  request: { label: "자재 신청", description: "필요한 자재를 선택해 출고를 요청합니다." },
+  requestReview: { label: "자재 신청 확인", description: "선택한 자재 수량과 사유를 확인합니다." },
+  history: { label: "신청 내역", description: "내 요청 상태와 수정, 취소 이력을 확인합니다." },
+  usage: { label: "사용자재 등록", description: "현장에서 사용한 자재를 기록합니다." },
+  usageReview: { label: "사용자재 확인", description: "선택한 자재의 사용 수량을 확인합니다." },
+  inventory: { label: "보유자재현황", description: "내 보유재고를 품목별로 확인합니다." },
+  return: { label: "자재 반납", description: "남은 자재를 반납 수량으로 등록합니다." },
+  catalog: { label: "자재 목록", description: "전체 자재를 분류와 코드로 찾아봅니다." },
+  audit: { label: "변경 내역", description: "수정과 취소 기록을 기간 없이 조회합니다." },
+  inbound: { label: "반납 입고 관리", description: "직원 반납 자재를 입고 처리합니다." },
+  permissions: { label: "권한 설정", description: "관리자 기능 열람 권한을 조정합니다." },
+};
+const shellNavOrder: Array<AppScreen> = ["home", "request", "history", "usage", "inventory", "return", "catalog", "audit", "inbound", "permissions"];
 
 export function Dashboard() {
   const [screen,setScreen] = useState<Screen>("login");
-  const [userId,setUserId] = useState(""); const [password,setPassword] = useState(""); const [loginError,setLoginError] = useState("");
+  const [userId,setUserId] = useState("GUEST"); const [password,setPassword] = useState(""); const [loginError,setLoginError] = useState("");
   const [requests,setRequests] = useState<MaterialRequest[]>([]); const [materials,setMaterials] = useState<CatalogMaterial[]>([]);
   const [loading,setLoading] = useState(true); const [catalogLoading,setCatalogLoading] = useState(true);
   const [query,setQuery] = useState(""); const [category,setCategory] = useState("all"); const [statusFilter,setStatusFilter] = useState("all");
@@ -48,11 +64,22 @@ export function Dashboard() {
   const [editingUsageId,setEditingUsageId] = useState<number|null>(null); const [usageEditForm,setUsageEditForm] = useState({materialSourceKey:"",quantity:1,storeName:"",usedDate:""}); const [usageHistoryId,setUsageHistoryId] = useState<number|null>(null); const [usageHistory,setUsageHistory] = useState<Record<number,UsageEdit[]>>({});
   const [selectedHistoryIds,setSelectedHistoryIds] = useState<number[]>([]); const [requestAction,setRequestAction] = useState<{type:"receive"|"cancel";items:MaterialRequest[]}|null>(null); const [requestActionSaving,setRequestActionSaving] = useState(false);
   const [auditLogs,setAuditLogs] = useState<AuditLog[]>([]); const [auditLoading,setAuditLoading] = useState(false);
+  const [isNavOpen,setIsNavOpen] = useState(false);
 
   useEffect(()=>{ void loadMaterials(); },[]);
+  // TEMPORARY: skip the login screen while auth is disabled server-side (see app/chatgpt-auth.ts). Remove together.
+  useEffect(()=>{ const autoId="GUEST"; void (async()=>{ try{ await loadAccess(autoId); setForm(current=>({...current,requester:autoId})); setScreen("home"); await Promise.all([loadInventory(),loadUsages(autoId),loadRequests(autoId)]); }catch(cause){ setLoginError(cause instanceof Error?cause.message:"로그인하지 못했습니다."); } })(); },[]);
   useEffect(()=>{ if(!toast)return; const timer=window.setTimeout(()=>setToast(""),2600); return()=>window.clearTimeout(timer); },[toast]);
   useEffect(()=>{if(screen==="inbound"&&profile?.isAdmin)void loadReturnInbound();},[screen,profile?.isAdmin]);
   useEffect(()=>{if(screen==="audit")void loadAuditLogs();},[screen]);
+  useEffect(()=>{
+    if(!isNavOpen) return;
+    const previousOverflow=document.body.style.overflow;
+    const handleKeyDown=(event:KeyboardEvent)=>{if(event.key==="Escape")setIsNavOpen(false);};
+    document.body.style.overflow="hidden";
+    window.addEventListener("keydown",handleKeyDown);
+    return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener("keydown",handleKeyDown);};
+  },[isNavOpen]);
   async function loadRequests(employeeId=""){ setLoading(true); try{ const query=employeeId?`?employeeId=${encodeURIComponent(employeeId)}`:"";const response=await fetch(`/api/requests${query}`); const data=await response.json() as {requests?:MaterialRequest[]}; if(!response.ok)throw new Error(); setRequests(data.requests??[]); }catch{setError("신청 내역을 불러오지 못했습니다.");}finally{setLoading(false);} }
   async function loadMaterials(){ setCatalogLoading(true); try{ const response=await fetch("/api/materials"); const data=await response.json() as {materials?:CatalogMaterial[]}; if(!response.ok)throw new Error(); setMaterials(data.materials??[]); }catch{setError("자재 목록을 불러오지 못했습니다.");}finally{setCatalogLoading(false);} }
   async function loadInventory(){ try{ const response=await fetch("/api/inventory"); const data=await response.json() as {inventory?:Array<{materialSourceKey:string;quantity:number}>}; if(!response.ok)return; setInventory(Object.fromEntries((data.inventory??[]).map(item=>[item.materialSourceKey,item.quantity]))); }catch(cause){void cause;} }
@@ -71,9 +98,12 @@ export function Dashboard() {
   const heldMaterialCount=Object.values(inventory).filter(quantity=>quantity>0).length;
   const heldMaterialTotal=Object.values(inventory).reduce((sum,quantity)=>sum+quantity,0);
   const selectableHistory=historyMatches.filter(item=>item.canReceive||item.canEdit); const selectedHistory=historyMatches.filter(item=>selectedHistoryIds.includes(item.id)); const selectedReceivable=selectedHistory.filter(item=>item.canReceive); const selectedCancellable=selectedHistory.filter(item=>item.canEdit);
+  const navItems=useMemo(()=>shellNavOrder.filter(screen=>(screen!=="inbound"&&screen!=="permissions")||profile?.isAdmin).map(screen=>({screen,label:screenMeta[screen].label,description:screenMeta[screen].description})),[profile?.isAdmin]);
+  const currentNav=screen==="login"?null:screenMeta[screen];
 
   async function login(event:FormEvent){ event.preventDefault(); if(!userId.trim()||!password){setLoginError("아이디와 비밀번호를 입력해 주세요.");return;} const employeeId=userId.trim();try{await loadAccess(employeeId);setForm(current=>({...current,requester:employeeId}));setPassword("");setLoginError("");setScreen("home");await Promise.all([loadInventory(),loadUsages(employeeId),loadRequests(employeeId)]);}catch(cause){setLoginError(cause instanceof Error?cause.message:"로그인하지 못했습니다.");} }
   function go(next:Screen){ setQuery("");setCategory("all");setError("");setScreen(next);requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"})); }
+  function navigate(next:Screen){ setIsNavOpen(false); go(next); }
   function openRequestAction(type:"receive"|"cancel",items:MaterialRequest[]){setError("");setRequestAction({type,items});}
   function toggleRequestMaterial(sourceKey:string){setSelectedRequestKeys(current=>current.includes(sourceKey)?current.filter(key=>key!==sourceKey):[...current,sourceKey]);}
   async function submitSelectedRequests(){if(!form.requiredDate){setError("필요일을 선택해 주세요.");return;}if(!selectedRequestMaterials.length){setError("신청할 자재를 선택해 주세요.");return;}const invalid=selectedRequestMaterials.find(item=>{const quantity=Number(requestQuantities[item.sourceKey]??0);return !Number.isInteger(quantity)||quantity<1;});if(invalid){setError(`${invalid.itemName}의 신청 수량을 1개 이상 입력해 주세요.`);return;}setSaving(true);setError("");try{const created=await Promise.all(selectedRequestMaterials.map(async item=>{const quantity=Number(requestQuantities[item.sourceKey]);const response=await fetch("/api/requests",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({...form,materialSourceKey:item.sourceKey,quantity,purpose:requestReasons[item.sourceKey]?.trim()??"",requester:form.requester||userId.trim()})});const data=await response.json() as {request?:MaterialRequest;error?:string};if(!response.ok||!data.request)throw new Error(data.error||`${item.itemName} 신청에 실패했습니다.`);return data.request;}));setRequests(current=>[...created,...current]);setSelectedRequestKeys([]);setRequestQuantities({});setRequestReasons({});setToast(`${created.length}개 자재를 신청했습니다.`);go("history");}catch(cause){await loadRequests(userId.trim());setError(cause instanceof Error?cause.message:"선택 자재 신청에 실패했습니다.");}finally{setSaving(false);}}
@@ -96,7 +126,44 @@ export function Dashboard() {
     <section className="login-panel"><form className="login-card" onSubmit={login}><span className="mobile-logo">MATFLOW</span><p className="step-label">LOGIN</p><h2>로그인</h2><p className="form-hint">사내 계정으로 서비스를 시작하세요.</p><label>아이디<input value={userId} onChange={e=>setUserId(e.target.value)} autoComplete="username" placeholder="아이디를 입력하세요"/></label><label>비밀번호<input value={password} onChange={e=>setPassword(e.target.value)} type="password" autoComplete="current-password" placeholder="비밀번호를 입력하세요"/></label>{loginError&&<p className="inline-error">{loginError}</p>}<button className="main-button">로그인 <span>→</span></button><small>현재 화면 로그인 정보는 저장되지 않습니다.</small></form></section>
   </main>;
 
-  return <main className="service-page"><header className="service-header"><button className="logo-button" onClick={()=>go("home")}><span>MA</span>TFLOW</button><div className="header-user"><span>{userId.slice(0,1).toUpperCase()}</span><div><b>{userId}</b><small>기술부</small></div><button onClick={()=>{setUserId("");setProfile(null);setAppUsers([]);setUsages([]);setScreen("login");}}>로그아웃</button></div></header>
+  return <main className="service-page">
+    <aside className="desktop-sidebar" aria-label="전체 메뉴">
+      <div className="sidebar-brand">
+        <button className="logo-button sidebar-logo" onClick={()=>navigate("home")}><span>MA</span>TFLOW</button>
+        <p>{profile?.isAdmin?"관리자 메뉴":"사용자 메뉴"}</p>
+      </div>
+      <nav className="sidebar-nav">
+        {navItems.map(item=>(
+          <button key={item.screen} type="button" className={screen===item.screen?"sidebar-link active":"sidebar-link"} onClick={()=>navigate(item.screen)}>
+            <strong>{item.label}</strong>
+            <small>{item.description}</small>
+          </button>
+        ))}
+      </nav>
+      <button className="sidebar-logout" onClick={()=>{setIsNavOpen(false);setUserId("");setPassword("");setProfile(null);setAppUsers([]);setUsages([]);setRequests([]);setScreen("login");}}>로그아웃</button>
+    </aside>
+    <div className="service-content">
+      <header className="service-header">
+        <button
+          type="button"
+          className="mobile-menu-button"
+          aria-label="메뉴 열기"
+          aria-expanded={isNavOpen}
+          onClick={()=>setIsNavOpen(true)}
+        >
+          ☰
+        </button>
+        <button className="logo-button" onClick={()=>navigate("home")}><span>MA</span>TFLOW</button>
+        <div className="header-title">
+          <strong>{currentNav?.label ?? "대시보드"}</strong>
+          <small>{currentNav?.description ?? "오늘 필요한 업무를 빠르게 시작합니다."}</small>
+        </div>
+        <div className="header-user">
+          <span>{(profile?.displayName || userId).slice(0,1).toUpperCase()}</span>
+          <div><b>{profile?.displayName || userId}</b><small>기술부</small></div>
+          <button onClick={()=>{setIsNavOpen(false);setUserId("");setPassword("");setProfile(null);setAppUsers([]);setUsages([]);setScreen("login");}}>로그아웃</button>
+        </div>
+      </header>
     {screen==="home"&&<section className="home-screen screen-wrap"><div className="home-heading"><span className="kicker">MATERIAL FLOW</span><h1>자재 업무를<br/>시작하세요.</h1><p>필요한 업무 메뉴를 선택해 주세요.</p></div><div className="home-banner-grid"><button className="home-banner primary request-entry" onClick={()=>go("request")}><span>01 · REQUEST</span><i>＋</i><div><strong>자재 신청</strong><small>필요한 자재를 선택해 바로 신청합니다.</small></div><b>→</b></button><button className="home-banner usage-entry" onClick={()=>go("usage")}><span>02 · USAGE</span><i>✓</i><div><strong>사용자재 등록</strong><small>매장에서 사용한 자재와 수량을 기록합니다.</small></div><b>→</b></button><button className="home-banner request-status" onClick={()=>go("history")}><span>03 · OUTBOUND</span><i>↗</i><div><strong>출고요청현황</strong><small>진행 중 {activeRequests.toLocaleString()}건</small></div><b>→</b></button><button className="home-banner inventory-status" onClick={()=>go("inventory")}><span>04 · INVENTORY</span><i>▦</i><div><strong>보유자재현황</strong><small>{heldMaterialCount.toLocaleString()}종 · 총 {heldMaterialTotal.toLocaleString()}개</small></div><b>→</b></button><button className="home-banner return-entry" onClick={()=>go("return")}><span>05 · RETURN</span><i>↩</i><div><strong>자재반납</strong><small>보유 중인 자재의 반납 수량을 등록합니다.</small></div><b>→</b></button>{profile?.isAdmin&&<button className="home-banner inbound-admin" onClick={()=>go("inbound")}><span>ADMIN · INBOUND</span><i>↓</i><div><strong>반납 입고 관리</strong><small>직원이 반납한 자재를 확인하고 입고합니다.</small></div><b>→</b></button>}<button className="home-banner audit-entry" onClick={()=>go("audit")}><span>06 · AUDIT LOG</span><i>≡</i><div><strong>변경 내역</strong><small>{profile?.isAdmin?"전체 직원의 수정·취소 기록을 확인합니다.":"내 수정·취소 기록을 확인합니다."}</small></div><b>→</b></button></div></section>}
 
     {screen==="usage"&&<section className="screen-wrap detail-screen"><PageTitle step="01" title="사용자재 등록" description="사용일 오후 4시 이전까지 사용 내역을 수정하거나 취소할 수 있습니다." onBack={()=>go("home")}/><button type="button" className="basic-install-banner" onClick={applyBasicInstall}><span>QUICK SET</span><div><strong>기본설치</strong><small>대형수전 설치에 필요한 자재 9종을 한 번에 선택합니다.</small></div><b>9종 →</b></button><ListTools query={query} setQuery={setQuery} value={category} setValue={setCategory} type="category"/><div className="selection-toolbar"><span>선택 <strong>{selectedUsageKeys.length}</strong>개</span><button disabled={!selectedUsageKeys.length} onClick={()=>go("usageReview")}>선택 사용자재 등록 <b>→</b></button></div><div className="selection-sheet"><div className="selection-head"><span>선택</span><span>분류</span><span>품목코드</span><span>품목명 · 규격</span><span>개인 보유재고</span></div>{inventoryMatches.length===0?<div className="empty-box">사용 가능한 보유 자재가 없습니다.</div>:inventoryMatches.map(item=><label className={selectedUsageKeys.includes(item.sourceKey)?"selection-row selected":"selection-row"} key={item.sourceKey}><input type="checkbox" checked={selectedUsageKeys.includes(item.sourceKey)} onChange={()=>setSelectedUsageKeys(current=>current.includes(item.sourceKey)?current.filter(key=>key!==item.sourceKey):[...current,item.sourceKey])}/><span className="category-cell">{item.category}</span><code>{item.itemCode||"—"}</code><div><strong>{item.itemName}</strong><small>{[item.abbreviation,item.specification,item.notes].filter(Boolean).join(" · ")||"규격 없음"}</small></div><b>{(inventory[item.sourceKey]??0).toLocaleString()}개</b></label>)}</div><div className="usage-record-section"><div className="usage-record-title"><div><span className="step-label">USAGE HISTORY</span><h2>사용 내역</h2></div><small>등록한 사용자재 기록입니다.</small></div><div className="usage-record-list">{usages.length===0?<div className="empty-box">등록된 사용 내역이 없습니다.</div>:usages.map(item=><article className={item.status==="cancelled"?"usage-cancelled":""} key={item.id}><div className="usage-record-main"><div><strong>{item.itemName}{item.status==="cancelled"&&<em className="cancelled-badge">등록 취소</em>}</strong><small>{item.employeeId||"직원"}</small></div><div><small>매장명</small><b>{item.storeName}</b></div><div><small>사용일</small><b>{item.usedDate.replaceAll("-",".")}</b></div><div><small>사용 수량</small><b>{item.quantity.toLocaleString()}개</b></div><div className="usage-record-actions"><button disabled={!item.canEdit} title={item.canEdit?"사용 내역 수정":"사용일 오후 4시가 지났거나 취소된 기록입니다"} onClick={()=>startUsageEdit(item)}>수정</button><button className="cancel-usage" disabled={!item.canEdit} title={item.canEdit?"사용 등록 취소":"사용일 오후 4시가 지났거나 취소된 기록입니다"} onClick={()=>void cancelUsage(item)}>등록 취소</button><button onClick={()=>usageHistoryId===item.id?setUsageHistoryId(null):void loadUsageEditHistory(item.id)}>변경 내역</button></div></div>{editingUsageId===item.id&&<div className="usage-edit-panel"><div className="usage-edit-notice">사용일 오후 4시 이전까지 저장할 수 있습니다.</div><label>자재<select value={usageEditForm.materialSourceKey} onChange={e=>setUsageEditForm({...usageEditForm,materialSourceKey:e.target.value})}>{materials.filter(material=>material.sourceKey===item.materialSourceKey||(inventory[material.sourceKey]??0)>0).map(material=><option key={material.sourceKey} value={material.sourceKey}>{material.itemCode?`${material.itemCode} · `:""}{material.itemName}</option>)}</select></label><label>수량<input type="number" min="1" value={usageEditForm.quantity} onChange={e=>setUsageEditForm({...usageEditForm,quantity:Number(e.target.value)})}/></label><label>매장명<input value={usageEditForm.storeName} onChange={e=>setUsageEditForm({...usageEditForm,storeName:e.target.value})}/></label><label>사용일<input type="date" value={usageEditForm.usedDate} onChange={e=>setUsageEditForm({...usageEditForm,usedDate:e.target.value})}/></label><div className="edit-actions"><button onClick={()=>setEditingUsageId(null)}>취소</button><button disabled={usageSaving} onClick={()=>void saveUsageEdit(item)}>{usageSaving?"저장 중":"수정 저장"}</button></div></div>}{usageHistoryId===item.id&&<div className="edit-history-panel"><strong>변경 내역</strong>{(usageHistory[item.id]??[]).length===0?<p>아직 변경된 내용이 없습니다.</p>:(usageHistory[item.id]??[]).map(edit=><div className="edit-log" key={edit.id}><time>{formatKoreaTime(edit.editedAt)}</time><div>{edit.changedFields.filter(field=>field!=="materialSourceKey").map(field=><span key={field}><b>{usageEditFieldLabels[field]??field}</b> {formatUsageEditValue(field,edit.previousValues[field])} → <em>{formatUsageEditValue(field,edit.newValues[field])}</em></span>)}</div></div>)}</div>}</article>)}</div></div></section>}
@@ -114,7 +181,28 @@ export function Dashboard() {
     {screen==="catalog"&&<section className="screen-wrap detail-screen"><PageTitle step="02" title="자재 목록" description={`애니워터 재고 관리 기준 ${materials.length.toLocaleString()}개 품목입니다.`} onBack={()=>go("home")}/><ListTools query={query} setQuery={setQuery} value={category} setValue={setCategory} type="category"/><div className="catalog-summary">검색 결과 <strong>{materialMatches.length.toLocaleString()}</strong>개</div><div className="catalog-sheet"><div className="catalog-sheet-head"><span>분류</span><span>품목코드</span><span>품목명</span><span>약어 · 규격</span><span>신청</span></div>{materialMatches.length===0?<div className="empty-box">검색된 자재가 없습니다.</div>:materialMatches.map(item=><div className="catalog-sheet-row" key={item.sourceKey}><span className="category-cell">{item.category}</span><code>{item.itemCode||"—"}</code><strong>{item.itemName}</strong><small>{[item.abbreviation,item.specification,item.notes].filter(Boolean).join(" · ")||"—"}</small><button onClick={()=>{setForm({...form,materialSourceKey:item.sourceKey});go("request");}}>신청 <b>→</b></button></div>)}</div></section>}
     {screen==="history"&&<section className="screen-wrap detail-screen"><PageTitle step="03" title="신청 내역" description="필요일 오후 4시 이전까지 신청 내용을 수정하거나 취소할 수 있습니다." onBack={()=>go("home")}/><ListTools query={query} setQuery={setQuery} value={statusFilter} setValue={setStatusFilter} type="status"/><div className="history-bulk-toolbar"><label><input type="checkbox" aria-label="처리 가능한 신청 전체 선택" checked={selectableHistory.length>0&&selectableHistory.every(item=>selectedHistoryIds.includes(item.id))} onChange={e=>setSelectedHistoryIds(e.target.checked?selectableHistory.map(item=>item.id):[])}/><span>전체 선택</span><strong>{selectedHistory.length.toLocaleString()}건 선택</strong></label><div><button disabled={!selectedReceivable.length} onClick={()=>openRequestAction("receive",selectedReceivable)}>선택 수령 확인 <b>{selectedReceivable.length}</b></button><button className="bulk-cancel" disabled={!selectedCancellable.length} onClick={()=>openRequestAction("cancel",selectedCancellable)}>선택 신청 취소 <b>{selectedCancellable.length}</b></button></div></div><div className="history-list editable-history">{loading?<div className="empty-box">신청 내역을 불러오는 중입니다.</div>:historyMatches.length===0?<div className="empty-box">신청 내역이 없습니다.</div>:historyMatches.map(item=><article className={selectedHistoryIds.includes(item.id)?"history-selected":""} key={item.id}><div className="history-row-main"><input className="history-select" type="checkbox" aria-label={`${item.itemName} 선택`} disabled={!item.canReceive&&!item.canEdit} checked={selectedHistoryIds.includes(item.id)} onChange={e=>setSelectedHistoryIds(current=>e.target.checked?[...current,item.id]:current.filter(id=>id!==item.id))}/><button type="button" className="history-id history-name-select" disabled={!item.canReceive&&!item.canEdit} aria-label={`${item.itemName} 선택 전환`} onClick={()=>setSelectedHistoryIds(current=>current.includes(item.id)?current.filter(id=>id!==item.id):[...current,item.id])}><strong>{item.itemName}</strong></button><div><small>수량</small><strong>{item.quantity.toLocaleString()} {item.unit}</strong></div><div><small>필요일</small><strong>{item.requiredDate.replaceAll("-",".")}</strong></div><div className="history-purpose"><small>출고 사유</small><strong>{item.purpose||"—"}</strong></div><button className={`receipt-confirm ${item.status==="completed"?"done":""}`} disabled={!item.canReceive} title={item.status==="completed"?"이미 수령 확인했습니다":item.canReceive?"수령 확인 후 개인 보유재고에 반영됩니다":"수령 확인할 수 없는 신청입니다"} onClick={()=>openRequestAction("receive",[item])}>{item.status==="completed"?"✓ 수령 완료":"□ 수령 확인"}</button><div className="history-actions"><button disabled={!item.canEdit} title={item.canEdit?"신청 내용 수정":"수정 가능 시간이 지났습니다"} onClick={()=>startEdit(item)}>수정</button><button className="cancel-request" disabled={!item.canEdit} title={item.canEdit?"신청 취소":"취소 가능 시간이 지났습니다"} onClick={()=>openRequestAction("cancel",[item])}>신청 취소</button><button onClick={()=>historyId===item.id?setHistoryId(null):void loadEditHistory(item.id)}>변경 내역</button></div></div>{editingId===item.id&&<div className="history-edit-panel"><div className="edit-panel-title"><strong>{item.itemName} 수정</strong><span>필요일 오후 4시 이전까지 저장할 수 있습니다.</span></div><div className="edit-fields"><label>수량<input type="number" min="1" value={editForm.quantity} onChange={e=>setEditForm({...editForm,quantity:Number(e.target.value)})}/></label><label>단위<select value={editForm.unit} onChange={e=>setEditForm({...editForm,unit:e.target.value})}><option>EA</option><option>SET</option><option>BOX</option><option>M</option><option>KG</option></select></label><label>필요일<input type="date" value={editForm.requiredDate} onChange={e=>setEditForm({...editForm,requiredDate:e.target.value})}/></label><label className="edit-purpose">출고 사유<input value={editForm.purpose} onChange={e=>setEditForm({...editForm,purpose:e.target.value})}/></label></div>{error&&<p className="form-error">{error}</p>}<div className="edit-actions"><button onClick={()=>setEditingId(null)}>취소</button><button disabled={editSaving} onClick={()=>void saveRequestEdit(item)}>{editSaving?"저장 중":"수정 저장"}</button></div></div>}{historyId===item.id&&<div className="edit-history-panel"><strong>변경 내역</strong>{(editHistory[item.id]??[]).length===0?<p>아직 변경된 내용이 없습니다.</p>:(editHistory[item.id]??[]).map(edit=><div className="edit-log" key={edit.id}><time>{formatKoreaTime(edit.editedAt)}</time><div>{edit.changedFields.map(field=><span key={field}><b>{editFieldLabels[field]??field}</b> {formatEditValue(field,edit.previousValues[field])} → <em>{formatEditValue(field,edit.newValues[field])}</em></span>)}</div></div>)}</div>}</article>)}</div></section>}
     {requestAction&&<div className="action-dialog-backdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget&&!requestActionSaving)setRequestAction(null);}}><section className="action-dialog" role="dialog" aria-modal="true" aria-labelledby="request-action-title"><span>{requestAction.type==="receive"?"RECEIPT CONFIRM":"CANCEL REQUEST"}</span><h2 id="request-action-title">{requestAction.type==="receive"?"수령 확인":"신청 취소"}</h2><p><strong>선택한 신청 {requestAction.items.length.toLocaleString()}건</strong><br/>{requestAction.type==="receive"?"수령한 자재를 개인 보유재고에 반영합니다.":"선택한 신청을 취소하고 변경 내역에 기록합니다."}</p><ul className="action-item-list">{requestAction.items.slice(0,4).map(item=><li key={item.id}>{item.itemName}<b>{item.quantity.toLocaleString()} {item.unit}</b></li>)}{requestAction.items.length>4&&<li>외 {requestAction.items.length-4}건</li>}</ul>{error&&<p className="action-dialog-error">{error}</p>}<div><button type="button" disabled={requestActionSaving} onClick={()=>setRequestAction(null)}>돌아가기</button><button type="button" className={requestAction.type==="cancel"?"danger":"confirm"} disabled={requestActionSaving} onClick={()=>void(requestAction.type==="receive"?confirmReceipts(requestAction.items):cancelRequests(requestAction.items))}>{requestActionSaving?"처리 중":requestAction.type==="receive"?`${requestAction.items.length}건 수령 확인`:`${requestAction.items.length}건 신청 취소`}</button></div></section></div>}
+    {isNavOpen&&<div className="drawer-overlay" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setIsNavOpen(false);}}>
+      <aside className="mobile-drawer" role="dialog" aria-modal="true" aria-labelledby="mobile-drawer-title">
+        <div className="drawer-top">
+          <div>
+            <span className="kicker">ANYWATER</span>
+            <h2 id="mobile-drawer-title">{profile?.isAdmin?"관리자 메뉴":"사용자 메뉴"}</h2>
+          </div>
+          <button type="button" className="drawer-close" aria-label="메뉴 닫기" onClick={()=>setIsNavOpen(false)}>✕</button>
+        </div>
+        <nav className="drawer-nav">
+          {navItems.map(item=>(
+            <button key={item.screen} type="button" className={screen===item.screen?"drawer-link active":"drawer-link"} onClick={()=>navigate(item.screen)}>
+              <strong>{item.label}</strong>
+              <small>{item.description}</small>
+            </button>
+          ))}
+        </nav>
+        <button className="drawer-logout" onClick={()=>{setIsNavOpen(false);setUserId("");setPassword("");setProfile(null);setAppUsers([]);setUsages([]);setRequests([]);setScreen("login");}}>로그아웃</button>
+      </aside>
+    </div>}
     {toast&&<div className="toast" role="status">✓ {toast}</div>}
+    </div>
   </main>;
 }
 

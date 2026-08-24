@@ -18,11 +18,22 @@ const SIGN_IN_PATH = "/signin-with-chatgpt";
 const SIGN_OUT_PATH = "/signout-with-chatgpt";
 const CALLBACK_PATH = "/callback";
 
+// TEMPORARY no-auth bypass: this standalone Cloudflare deployment has no
+// OpenAI dispatch in front of it, so the SIWC headers below never arrive from
+// a real visitor, and the login screen has nothing to authenticate against.
+// Until a real auth mechanism (e.g. Cloudflare Access) is wired up, every
+// unauthenticated request is treated as this fixed identity. This makes the
+// deployed site effectively open to anyone with the URL — remove this before
+// sharing the URL or entering real data.
+const NO_AUTH_FALLBACK_USER: ChatGPTUser = {
+  userId: "preview-admin", displayName: "미리보기 관리자", email: "dongho4619@gmail.com", fullName: null,
+};
+
 export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
   const requestHeaders = await headers();
   const userId = requestHeaders.get(USER_ID_HEADER);
   const email = requestHeaders.get(USER_EMAIL_HEADER);
-  if (!userId || !email) return null;
+  if (!userId || !email) return NO_AUTH_FALLBACK_USER;
 
   const encodedFullName = requestHeaders.get(USER_FULL_NAME_HEADER);
   const fullName =

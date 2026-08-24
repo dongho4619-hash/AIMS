@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/d1";
 import catalog from "../data/materials.json";
 import * as schema from "./schema";
 
-const CATALOG_VERSION = "anywater-2026-08-20-v2";
+const CATALOG_VERSION = "anywater-2026-08-20-v3";
 
 function getBinding() {
   if (!env.DB) throw new Error("Cloudflare D1 binding `DB` is unavailable.");
@@ -30,12 +30,15 @@ export async function ensureDatabase() {
       category TEXT NOT NULL,
       specification TEXT NOT NULL DEFAULT '',
       notes TEXT NOT NULL DEFAULT '',
-      source_row INTEGER NOT NULL,
+      unit TEXT NOT NULL DEFAULT 'EA',
+      minimum_stock INTEGER NOT NULL DEFAULT 0,
       active INTEGER NOT NULL DEFAULT 1,
-      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      sort_order INTEGER NOT NULL DEFAULT 999999
     )`),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_category_name ON materials (category, item_name)"),
     d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_item_code ON materials (item_code)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_category_sort ON materials (category, sort_order)"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS catalog_meta (
       id INTEGER PRIMARY KEY CHECK (id = 1),
       version TEXT NOT NULL,
@@ -81,21 +84,29 @@ export async function ensureDatabase() {
     )`),
     d1.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_personal_inventory_user_material ON personal_inventory (user_key, material_source_key)"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_returns (
-      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
+      id INTEGER PRIMARY KEY AUTOINCREMENT, return_number TEXT NOT NULL UNIQUE,
+      requester_key TEXT NOT NULL, requester_name TEXT NOT NULL, department TEXT NOT NULL,
       material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
-      reason TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'pending', received_by TEXT, received_at TEXT,
-      returned_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      unit TEXT NOT NULL DEFAULT 'EA', reason TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'pending',
+      rejection_reason TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      decided_at TEXT, decided_by TEXT
     )`),
-    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_returns_user_time ON material_returns (user_key, returned_at DESC)"),
-    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_returns_status_time ON material_returns (status, returned_at DESC)"),
-    d1.prepare(`CREATE TABLE IF NOT EXISTS warehouse_inventory (
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_returns_status_created ON material_returns (status, created_at DESC)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_returns_requester_created ON material_returns (requester_key, created_at DESC)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS inventory (
       id INTEGER PRIMARY KEY AUTOINCREMENT, material_source_key TEXT NOT NULL UNIQUE,
-      quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0), updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      on_hand INTEGER NOT NULL DEFAULT 0 CHECK (on_hand >= 0), reserved INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare(`CREATE TABLE IF NOT EXISTS app_users (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE, email TEXT NOT NULL,
-      display_name TEXT NOT NULL DEFAULT '', employee_id TEXT NOT NULL DEFAULT '',
-      is_admin INTEGER NOT NULL DEFAULT 0, can_view_admin INTEGER NOT NULL DEFAULT 0,
+      display_name TEXT NOT NULL DEFAULT '', department TEXT NOT NULL DEFAULT '기술부',
+      role TEXT NOT NULL DEFAULT 'user', active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS user_profiles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE,
+      employee_id TEXT NOT NULL DEFAULT '', is_admin INTEGER NOT NULL DEFAULT 0, can_view_admin INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_usages (
@@ -119,7 +130,7 @@ export async function ensureDatabase() {
 
   await d1.prepare("UPDATE materials SET active = 0").run();
   const upsertSql = `INSERT INTO materials (
-    source_key, item_code, item_name, abbreviation, category, specification, notes, source_row, active, updated_at
+    source_key, item_code, item_name, abbreviation, category, specification, notes, sort_order, active, updated_at
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
   ON CONFLICT(source_key) DO UPDATE SET
     item_code = excluded.item_code,
@@ -128,7 +139,7 @@ export async function ensureDatabase() {
     category = excluded.category,
     specification = excluded.specification,
     notes = excluded.notes,
-    source_row = excluded.source_row,
+    sort_order = excluded.sort_order,
     active = 1,
     updated_at = CURRENT_TIMESTAMP`;
   for (let index = 0; index < catalog.length; index += 75) {

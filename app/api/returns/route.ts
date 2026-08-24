@@ -1,8 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 import { getChatGPTUser } from "../../chatgpt-auth";
 import { getOrCreateAccess } from "../../access";
-import { ensureDatabase, getD1, getDb } from "../../../db";
-import { materialReturns, materials, personalInventory, warehouseInventory } from "../../../db/schema";
+import { getD1, getDb } from "../../../db";
+import { inventory, materialReturns, materials, personalInventory, userProfiles } from "../../../db/schema";
 
 function message(error: unknown) {
   return error instanceof Error ? error.message : "자재 반납을 처리하지 못했습니다.";
@@ -15,10 +15,25 @@ export async function GET() {
     const profile = await getOrCreateAccess(user);
     if (!profile.isAdmin) return Response.json({ error: "관리자만 입고 내역을 확인할 수 있습니다." }, { status: 403 });
     const db = getDb();
-    const [returns, warehouse] = await Promise.all([
-      db.select().from(materialReturns).orderBy(desc(materialReturns.returnedAt), desc(materialReturns.id)).limit(200),
-      db.select({ materialSourceKey: warehouseInventory.materialSourceKey, quantity: warehouseInventory.quantity }).from(warehouseInventory),
+    const [returnRows, warehouse] = await Promise.all([
+      db.select({ ret: materialReturns, employeeId: userProfiles.employeeId })
+        .from(materialReturns)
+        .leftJoin(userProfiles, eq(userProfiles.userKey, materialReturns.requesterKey))
+        .orderBy(desc(materialReturns.createdAt), desc(materialReturns.id)).limit(200),
+      db.select({ materialSourceKey: inventory.materialSourceKey, quantity: inventory.onHand }).from(inventory),
     ]);
+    const returns = returnRows.map(({ ret, employeeId }) => ({
+      id: ret.id,
+      userKey: ret.requesterKey,
+      employeeId: employeeId ?? "",
+      materialSourceKey: ret.materialSourceKey,
+      itemName: ret.itemName,
+      quantity: ret.quantity,
+      reason: ret.reason,
+      status: ret.status,
+      returnedAt: ret.createdAt,
+      receivedAt: ret.decidedAt,
+    }));
     return Response.json({ returns, warehouse });
   } catch (error) {
     return Response.json({ error: message(error) }, { status: 500 });
@@ -37,9 +52,9 @@ export async function POST(request: Request) {
     if (!materialSourceKey || !Number.isInteger(quantity) || quantity < 1) {
       return Response.json({ error: "반납 자재와 수량을 확인해 주세요." }, { status: 400 });
     }
-    await ensureDatabase();
+    const profile = await getOrCreateAccess(user, employeeId);
     const db = getDb();
-    const [material] = await db.select({ itemName: materials.itemName }).from(materials)
+    const [material] = await db.select({ itemName: materials.itemName, unit: materials.unit }).from(materials)
       .where(and(eq(materials.sourceKey, materialSourceKey), eq(materials.active, true))).limit(1);
     if (!material) return Response.json({ error: "반납할 자재를 찾을 수 없습니다." }, { status: 404 });
     const [stock] = await db.select({ quantity: personalInventory.quantity }).from(personalInventory)
@@ -47,12 +62,13 @@ export async function POST(request: Request) {
     if (!stock || stock.quantity < quantity) return Response.json({ error: "개인 보유재고보다 많이 반납할 수 없습니다." }, { status: 400 });
 
     const now = new Date().toISOString();
+    const returnNumber = `RT-${now.slice(2, 4)}${now.slice(5, 7)}${now.slice(8, 10)}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
     const d1 = getD1();
     const [, updateResult] = await d1.batch([
-      d1.prepare(`INSERT INTO material_returns (user_key, employee_id, material_source_key, item_name, quantity, reason, returned_at)
-        SELECT user_key, ?, material_source_key, ?, ?, ?, ? FROM personal_inventory
-        WHERE user_key = ? AND material_source_key = ? AND quantity >= ?`)
-        .bind(employeeId, material.itemName, quantity, reason, now, user.userId, materialSourceKey, quantity),
+      d1.prepare(`INSERT INTO material_returns (
+        return_number, requester_key, requester_name, department, material_source_key, item_name, quantity, unit, reason, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`)
+        .bind(returnNumber, user.userId, user.displayName, profile.department, materialSourceKey, material.itemName, quantity, material.unit, reason, now),
       d1.prepare(`UPDATE personal_inventory SET quantity = quantity - ?, updated_at = ?
         WHERE user_key = ? AND material_source_key = ? AND quantity >= ?`)
         .bind(quantity, now, user.userId, materialSourceKey, quantity),
@@ -78,19 +94,32 @@ export async function PATCH(request: Request) {
     const now = new Date().toISOString();
     const d1 = getD1();
     const [, updateResult] = await d1.batch([
-      d1.prepare(`INSERT INTO warehouse_inventory (material_source_key, quantity, updated_at)
+      d1.prepare(`INSERT INTO inventory (material_source_key, on_hand, updated_at)
         SELECT material_source_key, quantity, ? FROM material_returns WHERE id = ? AND status = 'pending'
         ON CONFLICT(material_source_key) DO UPDATE SET
-          quantity = warehouse_inventory.quantity + excluded.quantity, updated_at = excluded.updated_at`).bind(now, id),
-      d1.prepare(`UPDATE material_returns SET status = 'received', received_by = ?, received_at = ?
+          on_hand = inventory.on_hand + excluded.on_hand, updated_at = excluded.updated_at`).bind(now, id),
+      d1.prepare(`UPDATE material_returns SET status = 'received', decided_by = ?, decided_at = ?
         WHERE id = ? AND status = 'pending'`).bind(user.userId, now, id),
     ]);
     if (!updateResult.meta.changes) return Response.json({ error: "이미 입고했거나 처리할 수 없는 반납 건입니다." }, { status: 409 });
     const db = getDb();
     const [received] = await db.select().from(materialReturns).where(eq(materialReturns.id, id)).limit(1);
-    const [warehouse] = await db.select({ materialSourceKey: warehouseInventory.materialSourceKey, quantity: warehouseInventory.quantity })
-      .from(warehouseInventory).where(eq(warehouseInventory.materialSourceKey, received.materialSourceKey)).limit(1);
-    return Response.json({ returned: received, warehouse });
+    const [warehouse] = await db.select({ materialSourceKey: inventory.materialSourceKey, quantity: inventory.onHand })
+      .from(inventory).where(eq(inventory.materialSourceKey, received.materialSourceKey)).limit(1);
+    return Response.json({
+      returned: {
+        id: received.id,
+        userKey: received.requesterKey,
+        materialSourceKey: received.materialSourceKey,
+        itemName: received.itemName,
+        quantity: received.quantity,
+        reason: received.reason,
+        status: received.status,
+        returnedAt: received.createdAt,
+        receivedAt: received.decidedAt,
+      },
+      warehouse,
+    });
   } catch (error) {
     return Response.json({ error: message(error) }, { status: 500 });
   }

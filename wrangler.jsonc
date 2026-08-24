@@ -1,0 +1,23 @@
+{
+  "name": "anywater-inventory",
+  "main": "dist/server/index.js",
+  "compatibility_date": "2026-08-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "anywater-inventory-db",
+      "database_id": "983d3444-bc82-4420-ab9d-99491b68ed3f"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
