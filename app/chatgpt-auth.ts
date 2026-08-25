@@ -26,7 +26,10 @@ const CALLBACK_PATH = "/callback";
 // deployed site effectively open to anyone with the URL — remove this before
 // sharing the URL or entering real data.
 const NO_AUTH_FALLBACK_USER: ChatGPTUser = {
-  userId: "preview-admin", displayName: "미리보기 관리자", email: "dongho4619@gmail.com", fullName: null,
+  userId: "preview-user",
+  displayName: "미리보기 사용자",
+  email: "preview-user@local",
+  fullName: null,
 };
 
 export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
