@@ -31,11 +31,27 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+/.dev.vars
+/.dev.vars.*
+
+# local credentials and certificates
+/.wrangler/
+/.cloudflare/
+wrangler.local.jsonc
+*.key
+*.crt
+*.p12
+*.pfx
 
 # vercel
 .vercel
 
 /dist/
-/.wrangler/
 /outputs/
 /work/
+/tmp/
+/.deploy-stage*/
+/.pnpm-store/
+/.claude/
+/.openai/
+/*.tar.gz

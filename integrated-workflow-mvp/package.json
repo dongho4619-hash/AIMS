@@ -1,0 +1,11 @@
+{
+  "name": "anywater-integrated-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Anywater integrated workflow management MVP, separate from inventory management.",
+  "scripts": {
+    "dev": "node server.mjs",
+    "preview": "node server.mjs",
+    "deploy": "wrangler pages deploy . --project-name anywater-integrated-workflow"
+  }
+}
