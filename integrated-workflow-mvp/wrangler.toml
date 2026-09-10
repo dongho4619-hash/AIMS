@@ -1,4 +1,4 @@
-name = "anywater-integrated-workflow"
+name = "anywater-integrated-management-system"
 main = "worker.js"
 compatibility_date = "2026-09-10"
 compatibility_flags = ["nodejs_compat"]
