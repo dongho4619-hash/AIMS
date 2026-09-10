@@ -4,8 +4,8 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
 });
 
 function accessIdentity(request) {
-  const email = request.headers.get("Cf-Access-Authenticated-User-Email") || "";
-  const name = request.headers.get("Cf-Access-Authenticated-User-Name") || email;
+  const email = request.headers.get("Cf-Access-Authenticated-User-Email") || request.headers.get("oai-authenticated-user-email") || "";
+  const name = request.headers.get("Cf-Access-Authenticated-User-Name") || request.headers.get("oai-authenticated-user-full-name") || email;
   return { email: email.toLowerCase().trim(), name: name.trim() };
 }
 

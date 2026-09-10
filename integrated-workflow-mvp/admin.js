@@ -1,3 +1,8 @@
+const originalIntegratedFetch = window.fetch.bind(window);
+window.fetch = (input, init) => {
+  if (typeof input === "string" && input.startsWith("/api/")) input = `/integrated-app${input}`;
+  return originalIntegratedFetch(input, init);
+};
 const adminStyle = document.createElement("style");
 adminStyle.textContent = ".integrated-admin-banner{display:none;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:18px 20px;border:1px solid #ead7c5;border-radius:18px;background:linear-gradient(110deg,#fff8f1,#fff);box-shadow:0 10px 28px #8a673c12}.integrated-admin-banner.visible{display:flex}.integrated-admin-banner-copy{display:grid;gap:5px}.integrated-admin-banner-copy span{color:#a26838;font-size:9px;font-weight:850;letter-spacing:.14em}.integrated-admin-banner-copy strong{font-size:15px}.integrated-admin-banner-copy small{color:#7b766f;font-size:10px}.integrated-admin-banner-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}.integrated-admin-banner-actions button{min-height:38px;padding:0 12px;border:1px solid #ead7c5;border-radius:10px;background:#fff;color:#7b542f;font-size:10px;font-weight:850;cursor:pointer}.integrated-admin-banner-actions button:hover{background:#fff3e7;border-color:#d9b898}@media(max-width:620px){.integrated-admin-banner{align-items:stretch;flex-direction:column;padding:16px}.integrated-admin-banner-actions{display:grid;grid-template-columns:1fr 1fr}.integrated-admin-banner-actions button{width:100%}.integrated-admin-banner-actions button:last-child{grid-column:1/-1}}";
 document.head.appendChild(adminStyle);
