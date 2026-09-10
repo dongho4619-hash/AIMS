@@ -222,6 +222,10 @@ export function Dashboard() {
         </div>
         <button type="button" className="dashboard-link" onClick={()=>go("catalog")}>자재 상세 조회</button>
       </div>
+      {profile?.isAdmin&&<section className="admin-banner" aria-label="관리자 업무 바로가기">
+        <div className="admin-banner-copy"><span>ADMIN ONLY</span><strong>관리자 확인이 필요한 업무</strong><small>출고 승인, 반납 입고, 권한 변경과 재고 이력을 관리합니다.</small></div>
+        <div className="admin-banner-actions"><button type="button" onClick={()=>go("history")}>승인 대기 <b>{outboundWaitingCount.toLocaleString()}</b></button><button type="button" onClick={()=>go("inbound")}>반납 입고 <b>{returnWaitingCount.toLocaleString()}</b></button><button type="button" onClick={()=>go("permissions")}>권한 설정</button></div>
+      </section>}
       <div className="dashboard-stat-grid">
         <button type="button" className="dashboard-stat orange" onClick={()=>go("history")}>
           <span>출고요청 대기</span>
