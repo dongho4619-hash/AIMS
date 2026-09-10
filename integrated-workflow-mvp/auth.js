@@ -8,7 +8,7 @@ document.body.appendChild(authGate);
 const authCard = authGate.querySelector(".auth-card");
 const authError = authCard.querySelector(".auth-error");
 let authMode = "login";
-function showAuth(mode) { authMode = mode; authGate.hidden = false; authCard.querySelector("h2").textContent = mode === "setup" ? "관리자 계정 만들기" : "로그인"; authCard.querySelector(".auth-description").textContent = mode === "setup" ? "처음 한 번만 관리자 아이디와 비밀번호를 설정하세요." : "통합업무관리 계정으로 로그인하세요."; authCard.querySelector("button").textContent = mode === "setup" ? "관리자 계정 저장" : "로그인"; authCard.querySelector(".display-name-field").hidden = mode !== "setup"; authCard.querySelector(".password-confirm-field").hidden = mode !== "setup"; authCard.querySelector("[name=passwordConfirm]").required = mode === "setup"; }
+function showAuth(mode) { authMode = mode; authGate.hidden = false; authCard.querySelector("h2").textContent = mode === "setup" ? "관리자 계정 만들기" : "로그인"; authCard.querySelector(".auth-description").textContent = mode === "setup" ? "처음 한 번만 관리자 아이디와 비밀번호를 설정하세요." : "통합업무관리 계정으로 로그인하세요."; authCard.querySelector("button").textContent = mode === "setup" ? "관리자 계정 저장" : "로그인"; authCard.querySelector(".display-name-field").hidden = mode !== "setup"; authCard.querySelector(".password-confirm-field").hidden = mode !== "setup"; authCard.querySelector("[name=passwordConfirm]").required = mode === "setup"; authCard.querySelector("[name=password]").autocomplete = mode === "setup" ? "new-password" : "current-password"; }
 function hideAuth(session) { authGate.hidden = true; addPasswordButton(); window.dispatchEvent(new CustomEvent("integrated-authenticated", { detail: session })); }
 function addPasswordButton() {
   if (document.querySelector(".password-change-button")) return;
