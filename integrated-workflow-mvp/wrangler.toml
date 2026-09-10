@@ -9,5 +9,5 @@ binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "anywater-integrated-workflow-db"
-database_id = "PASTE_NEW_D1_DATABASE_ID_HERE"
+database_name = "anywater-integrated-management-system-db"
+database_id = "08c67f5d-01b4-4e54-87d3-7eb58863f16e"
