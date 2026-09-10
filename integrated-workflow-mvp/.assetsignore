@@ -7,4 +7,6 @@ node_modules/
 schema.sql
 wrangler.toml
 worker.js
+installation-api.js
+*.test.mjs
 *.map

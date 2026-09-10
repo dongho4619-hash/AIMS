@@ -1,3 +1,4 @@
+import('./installations.js').catch(() => runtimeToast('설치요청서 화면을 불러오지 못했습니다. 새로고침해주세요.'));
 const runtimeKey = "anywater-integrated-records";
 const runtimeStyle = document.createElement("style");
 runtimeStyle.textContent = ".runtime-field{display:block;margin:12px 0;color:#738496;font-size:11px}.runtime-field input,.runtime-field select,.runtime-field textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px;border:1px solid #dce5e8;border-radius:7px;font:inherit;color:#183047;background:#fff}.runtime-field textarea{resize:vertical}.runtime-modal{z-index:20}";

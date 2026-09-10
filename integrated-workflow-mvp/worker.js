@@ -1,3 +1,4 @@
+import { installationApi } from './installation-api.js';
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
   headers: { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*" }
@@ -161,6 +162,9 @@ export default {
       if (!user) return json({ error: "통합 시스템 로그인이 필요합니다." }, 401);
       return proxyInventory(request, env, user);
     }
+    if (url.pathname === '/api/installations' || url.pathname.startsWith('/api/installations/')) {
+      return installationApi(request, env.DB, await authUser(request, env));
+    }
     if (url.pathname === "/api/records") {
       if (request.method === "OPTIONS") return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-methods": "GET,POST,OPTIONS", "access-control-allow-headers": "content-type" } });
       if (!env.DB) return json({ error: "D1 바인딩 DB가 연결되지 않았습니다." }, 503);
@@ -172,6 +176,7 @@ export default {
       }
       if (request.method === "POST") {
         const body = await request.json();
+        if (body.kind === 'installation') return json({ error: '설치요청서 전용 입력 화면을 사용해주세요.' }, 400);
         const now = new Date().toISOString();
         const id = crypto.randomUUID();
         const payload = { ...body };
