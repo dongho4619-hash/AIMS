@@ -52,8 +52,8 @@ export default {
         if (Number(count?.count || 0) > 0) return json({ error: "관리자 계정이 이미 설정되었습니다." }, 409);
         const body = await request.json();
         const username = String(body.username || "").trim().toLowerCase();
-        const password = String(body.password || "");
-        const passwordConfirm = String(body.passwordConfirm || "");
+        const password = String(body.password || "").trim();
+        const passwordConfirm = String(body.passwordConfirm || "").trim();
         const displayName = String(body.displayName || "관리자").trim() || "관리자";
         if (!/^[a-z0-9._-]{3,30}$/.test(username) || password.length < 8) return json({ error: "아이디는 영문·숫자 3자 이상, 비밀번호는 8자 이상이어야 합니다." }, 400);
         if (password !== passwordConfirm) return json({ error: "비밀번호가 서로 일치하지 않습니다." }, 400);
