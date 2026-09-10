@@ -11,17 +11,20 @@ npm run dev
 
 접속 주소: `http://localhost:4173`
 
-## Cloudflare Pages 독립 배포
+## Cloudflare Workers + D1 독립 배포
 
-이 프로그램은 기존 재고 프로그램과 다른 Pages 프로젝트로 배포합니다.
+이 프로그램은 기존 재고 프로그램과 다른 Workers 프로젝트와 전용 D1 데이터베이스로 배포합니다.
 
 ```powershell
 cd integrated-workflow-mvp
 npx wrangler login
+npx wrangler d1 create anywater-integrated-workflow-db
+# 위 명령이 반환한 database_id를 wrangler.toml에 입력
+npx wrangler d1 execute anywater-integrated-workflow-db --remote --file=schema.sql
 npm run deploy
 ```
 
-`anywater-integrated-workflow`라는 별도 Pages 프로젝트가 생성되며, 기존 재고 프로그램의 Pages 프로젝트·D1 데이터베이스와 분리됩니다. 실제 회사 데이터가 연결되기 전에는 샘플 데이터만 노출해야 합니다.
+`anywater-integrated-workflow`라는 별도 Worker와 전용 D1 데이터베이스가 생성되며, 기존 재고 프로그램의 Worker·D1 데이터베이스와 분리됩니다. 실제 회사 데이터가 연결되기 전에는 샘플 데이터만 노출해야 합니다.
 
 ## 운영 전환 순서
 
@@ -33,4 +36,4 @@ npm run deploy
 6. 문자 발송업체와 CMS 사업자 API 연결
 7. 샘플 데이터 제거 후 내부 사용자 시범운영
 
-현재 버전은 화면과 업무 흐름 검토용입니다. 기존 재고 프로그램의 DB와 코드를 수정하지 않으며, 운영 전환 시 서버 검증 재고원장, 정식 로그인·권한, 파일 저장소, 감사이력, D1 API 연결이 필요합니다.
+현재 버전은 화면과 업무 흐름을 검토하면서 D1 저장 API를 연결할 수 있는 MVP입니다. 기존 재고 프로그램의 DB와 코드를 수정하지 않으며, 운영 전환 시 서버 검증 재고원장, 정식 로그인·권한, 파일 저장소, 감사이력이 필요합니다.

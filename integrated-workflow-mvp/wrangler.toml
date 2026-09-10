@@ -1,3 +1,13 @@
 name = "anywater-integrated-workflow"
-compatibility_date = "2026-09-09"
-pages_build_output_dir = "."
+main = "worker.js"
+compatibility_date = "2026-09-10"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "."
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "anywater-integrated-workflow-db"
+database_id = "PASTE_NEW_D1_DATABASE_ID_HERE"

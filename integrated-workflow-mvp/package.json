@@ -6,6 +6,6 @@
   "scripts": {
     "dev": "node server.mjs",
     "preview": "node server.mjs",
-    "deploy": "wrangler pages deploy . --project-name anywater-integrated-workflow"
+    "deploy": "wrangler deploy"
   }
 }
