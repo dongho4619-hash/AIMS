@@ -3,9 +3,24 @@ const json = (body, status = 200) => new Response(JSON.stringify(body), {
   headers: { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*" }
 });
 
+function accessIdentity(request) {
+  const email = request.headers.get("Cf-Access-Authenticated-User-Email") || "";
+  const name = request.headers.get("Cf-Access-Authenticated-User-Name") || email;
+  return { email: email.toLowerCase().trim(), name: name.trim() };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === "/api/session") {
+      const identity = accessIdentity(request);
+      return json({
+        authenticated: Boolean(identity.email),
+        email: identity.email,
+        displayName: identity.name,
+        isAdmin: identity.email === "dongho4619@gmail.com",
+      });
+    }
     if (url.pathname === "/api/records") {
       if (request.method === "OPTIONS") return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-methods": "GET,POST,OPTIONS", "access-control-allow-headers": "content-type" } });
       if (!env.DB) return json({ error: "D1 바인딩 DB가 연결되지 않았습니다." }, 503);
