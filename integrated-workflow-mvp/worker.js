@@ -37,6 +37,52 @@ function sessionCookie(token) {
   return `aw_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=28800`;
 }
 
+const inventoryApiPaths = new Set([
+  "/api/access",
+  "/api/audit-log",
+  "/api/inventory",
+  "/api/materials",
+  "/api/request-edits",
+  "/api/requests",
+  "/api/returns",
+  "/api/usage-edits",
+  "/api/usages",
+]);
+
+function isInventoryRequest(pathname) {
+  return pathname === "/inventory-app" ||
+    pathname.startsWith("/inventory-app/") ||
+    pathname.startsWith("/_next/") ||
+    pathname === "/_vinext/image" ||
+    inventoryApiPaths.has(pathname) ||
+    ["/favicon.svg", "/file.svg", "/globe.svg", "/og.png", "/window.svg"].includes(pathname);
+}
+
+async function proxyInventory(request, env, user) {
+  if (!env.INVENTORY_SERVICE) {
+    return json({ error: "자재관리 내부 서비스가 연결되지 않았습니다." }, 503);
+  }
+  const target = new URL(request.url);
+  if (target.pathname === "/inventory-app" || target.pathname === "/inventory-app/") {
+    target.pathname = "/";
+  }
+  target.protocol = "https:";
+  target.host = "inventory.internal";
+  const headers = new Headers(request.headers);
+  headers.delete("host");
+  headers.delete("cookie");
+  headers.set("oai-authenticated-user-id", `aims-user:${user.id}`);
+  headers.set("oai-authenticated-user-email", `${user.username}@integrated.local`);
+  headers.set("oai-authenticated-user-full-name", encodeURIComponent(user.display_name || user.username));
+  headers.set("oai-authenticated-user-full-name-encoding", "percent-encoded-utf-8");
+  headers.set("x-aims-username", user.username);
+  headers.set("x-aims-role", user.role);
+  const body = request.method === "GET" || request.method === "HEAD" ? undefined : request.body;
+  return env.INVENTORY_SERVICE.fetch(
+    new Request(target, { method: request.method, headers, body, redirect: "manual" }),
+  );
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -110,9 +156,15 @@ export default {
         isAdmin: user ? user.role === "admin" : identity.email === "dongho4619@gmail.com",
       });
     }
+    if (isInventoryRequest(url.pathname)) {
+      const user = await authUser(request, env);
+      if (!user) return json({ error: "통합 시스템 로그인이 필요합니다." }, 401);
+      return proxyInventory(request, env, user);
+    }
     if (url.pathname === "/api/records") {
       if (request.method === "OPTIONS") return new Response(null, { headers: { "access-control-allow-origin": "*", "access-control-allow-methods": "GET,POST,OPTIONS", "access-control-allow-headers": "content-type" } });
       if (!env.DB) return json({ error: "D1 바인딩 DB가 연결되지 않았습니다." }, 503);
+      if (!await authUser(request, env)) return json({ error: "로그인이 필요합니다." }, 401);
       if (request.method === "GET") {
         const limit = Math.min(Number(url.searchParams.get("limit") || 100), 500);
         const result = await env.DB.prepare("SELECT id, kind, status, payload_json, created_at, updated_at FROM workflow_records ORDER BY created_at DESC LIMIT ?").bind(limit).all();

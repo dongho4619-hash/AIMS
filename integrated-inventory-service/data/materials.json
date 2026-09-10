@@ -1,0 +1,2782 @@
+[
+  {
+    "sourceKey": "완제품:1001",
+    "itemCode": "1001",
+    "itemName": "정수기필터HK30",
+    "abbreviation": "HK-30",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "완제품:1002",
+    "itemCode": "1002",
+    "itemName": "정수기필터HK50C",
+    "abbreviation": "HK-50C",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "완제품:1003",
+    "itemCode": "1003",
+    "itemName": "정수기필터HK50F",
+    "abbreviation": "HK-50F",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "완제품:1004",
+    "itemCode": "1004",
+    "itemName": "정수기필터HK60",
+    "abbreviation": "HK-60",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "완제품:1005",
+    "itemCode": "1005",
+    "itemName": "정수기필터HK70",
+    "abbreviation": "HK-70",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "완제품:1006",
+    "itemCode": "1006",
+    "itemName": "정수기필터HK80",
+    "abbreviation": "HK-80",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "완제품:1007",
+    "itemCode": "1007",
+    "itemName": "정수기필터HK80N",
+    "abbreviation": "HK-80구형",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "완제품:1101",
+    "itemCode": "1101",
+    "itemName": "DW-85",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "완제품:1102",
+    "itemCode": "1102",
+    "itemName": "하우징필터 1구 50",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "완제품:1103",
+    "itemCode": "1103",
+    "itemName": "하우징필터 1구 60",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "완제품:1104",
+    "itemCode": "1104",
+    "itemName": "하우징필터 1구 80",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "완제품:1105",
+    "itemCode": "1105",
+    "itemName": "하우징필터 6구",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "완제품:1106",
+    "itemCode": "1106",
+    "itemName": "가정용 정수기(케이스형)",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "완제품:1201",
+    "itemCode": "1201",
+    "itemName": "직결수도",
+    "abbreviation": "직결수도",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "완제품:1202",
+    "itemCode": "1202",
+    "itemName": "직결수도(대형)",
+    "abbreviation": "직결수도(대형)",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "완제품:1203",
+    "itemCode": "1203",
+    "itemName": "대형수전",
+    "abbreviation": "대형수전",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "완제품:1204",
+    "itemCode": "1204",
+    "itemName": "소형수전(풍차)",
+    "abbreviation": "풍차",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 24
+  },
+  {
+    "sourceKey": "완제품:1205",
+    "itemCode": "1205",
+    "itemName": "소형수전(땅꽁)",
+    "abbreviation": "땅콩",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "완제품:1206",
+    "itemCode": "1206",
+    "itemName": "소형수전(롱)",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "완제품:1207",
+    "itemCode": "1207",
+    "itemName": "디포웰",
+    "abbreviation": "디포웰",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "완제품:1301",
+    "itemCode": "1301",
+    "itemName": "정가이버",
+    "abbreviation": "",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 29
+  },
+  {
+    "sourceKey": "완제품:1401",
+    "itemCode": "1401",
+    "itemName": "아이젠 비데 IB-3701",
+    "abbreviation": "IB-3701",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 31
+  },
+  {
+    "sourceKey": "완제품:1402",
+    "itemCode": "1402",
+    "itemName": "아이젠 비데 IB-B22WD2",
+    "abbreviation": "IB-B22W(벨루가)",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 32
+  },
+  {
+    "sourceKey": "완제품:1403",
+    "itemCode": "1403",
+    "itemName": "아이젠 비데 IZ-A13WD1E",
+    "abbreviation": "IZ-A13",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 33
+  },
+  {
+    "sourceKey": "완제품:1501",
+    "itemCode": "1501",
+    "itemName": "정수필터SH13",
+    "abbreviation": "SH13-S",
+    "category": "완제품",
+    "specification": "",
+    "notes": "세디먼트 단독",
+    "sourceRow": 35
+  },
+  {
+    "sourceKey": "완제품:1502",
+    "itemCode": "1502",
+    "itemName": "SH13-B",
+    "abbreviation": "SH13-B",
+    "category": "완제품",
+    "specification": "",
+    "notes": "블럭카본 단독",
+    "sourceRow": 36
+  },
+  {
+    "sourceKey": "완제품:1503",
+    "itemCode": "1503",
+    "itemName": "SH13-SS",
+    "abbreviation": "SH13-SS",
+    "category": "완제품",
+    "specification": "",
+    "notes": "세디+스케일 억제",
+    "sourceRow": 37
+  },
+  {
+    "sourceKey": "완제품:1504",
+    "itemCode": "1504",
+    "itemName": "SH13-BS",
+    "abbreviation": "SH13-BS",
+    "category": "완제품",
+    "specification": "",
+    "notes": "블럭+스케일 억제",
+    "sourceRow": 38
+  },
+  {
+    "sourceKey": "완제품:1505",
+    "itemCode": "1505",
+    "itemName": "정수필터SH20",
+    "abbreviation": "SH20-S",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 39
+  },
+  {
+    "sourceKey": "완제품:1506",
+    "itemCode": "1506",
+    "itemName": "SH20-B",
+    "abbreviation": "SH20-B",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 40
+  },
+  {
+    "sourceKey": "완제품:1507",
+    "itemCode": "1507",
+    "itemName": "SH20-SS",
+    "abbreviation": "SH20-SS",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 41
+  },
+  {
+    "sourceKey": "완제품:1508",
+    "itemCode": "1508",
+    "itemName": "SH20-BS",
+    "abbreviation": "SH20-BS",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 42
+  },
+  {
+    "sourceKey": "완제품:1601",
+    "itemCode": "1601",
+    "itemName": "직수형 RO system",
+    "abbreviation": "RO-1200",
+    "category": "완제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 44
+  },
+  {
+    "sourceKey": "완제품:1701",
+    "itemCode": "1701",
+    "itemName": "샤워린",
+    "abbreviation": "HK-30S",
+    "category": "완제품",
+    "specification": "",
+    "notes": "샤워호스 및 헤드 포함(논의 예정)",
+    "sourceRow": 46
+  },
+  {
+    "sourceKey": "반제품:2001",
+    "itemCode": "2001",
+    "itemName": "마이크로필터세트30",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "반제품:2002",
+    "itemCode": "2002",
+    "itemName": "마이크로필터세트50C",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "반제품:2003",
+    "itemCode": "2003",
+    "itemName": "마이크로필터세트50F",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "반제품:2004",
+    "itemCode": "2004",
+    "itemName": "마이크로필터세트60",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "반제품:2005",
+    "itemCode": "2005",
+    "itemName": "마이크로필터세트70",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "반제품:2006",
+    "itemCode": "2006",
+    "itemName": "마이크로필터세트80",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "반제품:2007",
+    "itemCode": "2007",
+    "itemName": "마이크로필터세트80N",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "반제품:2008",
+    "itemCode": "2008",
+    "itemName": "C형 해드세트",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "반제품:2009",
+    "itemCode": "2009",
+    "itemName": "F형 해드세트",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "반제품:2010",
+    "itemCode": "2010",
+    "itemName": "RO 필터세트",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "반제품:1501",
+    "itemCode": "1501",
+    "itemName": "SH13-S 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 20
+  },
+  {
+    "sourceKey": "반제품:1502",
+    "itemCode": "1502",
+    "itemName": "SH13-B 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "반제품:1503",
+    "itemCode": "1503",
+    "itemName": "SH13-SS 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "반제품:1504",
+    "itemCode": "1504",
+    "itemName": "SH13-BS 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "반제품:1505",
+    "itemCode": "1505",
+    "itemName": "SH20-S 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 24
+  },
+  {
+    "sourceKey": "반제품:1506",
+    "itemCode": "1506",
+    "itemName": "SH20-B 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "반제품:1507",
+    "itemCode": "1507",
+    "itemName": "SH20-SS 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "반제품:1508",
+    "itemCode": "1508",
+    "itemName": "SH20-BS 내부필터",
+    "abbreviation": "",
+    "category": "반제품",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "원자재:2100",
+    "itemCode": "2100",
+    "itemName": "활성탄GW-H20x40(쿠라레이)",
+    "abbreviation": "활성탄2040",
+    "category": "원자재",
+    "specification": "15KG",
+    "notes": "",
+    "sourceRow": 5
+  },
+  {
+    "sourceKey": "원자재:2101",
+    "itemCode": "2101",
+    "itemName": "실버카본(이륭화학)",
+    "abbreviation": "실버카본",
+    "category": "원자재",
+    "specification": "25KG",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "원자재:2102",
+    "itemCode": "2102",
+    "itemName": "양이온수지(삼양사)",
+    "abbreviation": "이온수지",
+    "category": "원자재",
+    "specification": "20KG",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "원자재:2103",
+    "itemCode": "2103",
+    "itemName": "마이크로필터(30/50C/50F)",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "10인치250MM(내경30MM)",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "원자재:2104",
+    "itemCode": "2104",
+    "itemName": "마이크로필터(60/70)",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "13인치320MM(내경30MM)",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "원자재:2105",
+    "itemCode": "2105",
+    "itemName": "마이크로필터(80/80N)",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "20인치500MM(내경30MM)",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "원자재:2106",
+    "itemCode": "2106",
+    "itemName": "상부부직포30",
+    "abbreviation": "원형전처리필터",
+    "category": "원자재",
+    "specification": "130MM",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "원자재:2107",
+    "itemCode": "2107",
+    "itemName": "상부부직포50/60/80",
+    "abbreviation": "원형전처리필터",
+    "category": "원자재",
+    "specification": "160MM",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "원자재:2108",
+    "itemCode": "2108",
+    "itemName": "상부부직포70/80N",
+    "abbreviation": "원형전처리필터",
+    "category": "원자재",
+    "specification": "200MM",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "원자재:2109",
+    "itemCode": "2109",
+    "itemName": "하부부직포",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "75MM",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "원자재:2110",
+    "itemCode": "2110",
+    "itemName": "상부캡50C",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "원자재:2111",
+    "itemCode": "2111",
+    "itemName": "상부캡(30/50F/60/70/80/80N)",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "원자재:2112",
+    "itemCode": "2112",
+    "itemName": "하부캡(공용)",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "원자재:2113",
+    "itemCode": "2113",
+    "itemName": "SED",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "원자재:2114",
+    "itemCode": "2114",
+    "itemName": "UF",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "원자재:2115",
+    "itemCode": "2115",
+    "itemName": "POST",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 20
+  },
+  {
+    "sourceKey": "원자재:2116",
+    "itemCode": "2116",
+    "itemName": "DW85",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "원자재:2117",
+    "itemCode": "2117",
+    "itemName": "DLPPA1987",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "원자재:2118",
+    "itemCode": "2118",
+    "itemName": "IZEN비데필터",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "원자재:1503",
+    "itemCode": "1503",
+    "itemName": "세디먼트13",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "원자재:1504",
+    "itemCode": "1504",
+    "itemName": "세디먼트20",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "원자재:1505",
+    "itemCode": "1505",
+    "itemName": "Sus housing 13",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "원자재:1506",
+    "itemCode": "1506",
+    "itemName": "Sus housing 20",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 28
+  },
+  {
+    "sourceKey": "원자재:1507",
+    "itemCode": "1507",
+    "itemName": "sus ring",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 29
+  },
+  {
+    "sourceKey": "원자재:1508",
+    "itemCode": "1508",
+    "itemName": "헤드",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 30
+  },
+  {
+    "sourceKey": "원자재:row-31",
+    "itemCode": null,
+    "itemName": "헤드 고무",
+    "abbreviation": "",
+    "category": "원자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 31
+  },
+  {
+    "sourceKey": "부자재:3001",
+    "itemCode": "3001",
+    "itemName": "하우징 몸통 30",
+    "abbreviation": "30하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "부자재:3002",
+    "itemCode": "3002",
+    "itemName": "하우징 몸통 50",
+    "abbreviation": "50하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "부자재:3003",
+    "itemCode": "3003",
+    "itemName": "하우징 몸통 60",
+    "abbreviation": "60하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "부자재:3004",
+    "itemCode": "3004",
+    "itemName": "하우징 몸통 70",
+    "abbreviation": "70하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "부자재:3005",
+    "itemCode": "3005",
+    "itemName": "하우징 몸통 80",
+    "abbreviation": "80하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "부자재:3006",
+    "itemCode": "3006",
+    "itemName": "하우징 몸통 80N",
+    "abbreviation": "80N하우징",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "부자재:3007",
+    "itemCode": "3007",
+    "itemName": "필터 내통(30/50C/50F)",
+    "abbreviation": "50내통",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "부자재:3008",
+    "itemCode": "3008",
+    "itemName": "필터 내통60",
+    "abbreviation": "60내통",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "부자재:3009",
+    "itemCode": "3009",
+    "itemName": "필터 내통70",
+    "abbreviation": "70내통",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "부자재:3010",
+    "itemCode": "3010",
+    "itemName": "필터 내통(80/80N)",
+    "abbreviation": "80내통",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "부자재:3011",
+    "itemCode": "3011",
+    "itemName": "C형 해드(50C)",
+    "abbreviation": "C형해드",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "부자재:3012",
+    "itemCode": "3012",
+    "itemName": "F형 해드(30/50F/60/70/80/80N)",
+    "abbreviation": "F형해드",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "부자재:3013",
+    "itemCode": "3013",
+    "itemName": "C형 해드 매쉬망(50C)",
+    "abbreviation": "C형해드 매쉬망",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "부자재:3014",
+    "itemCode": "3014",
+    "itemName": "F형 해드 매쉬망(30/50F/60/70/80/80N)",
+    "abbreviation": "F형해드 매쉬망",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "부자재:3015",
+    "itemCode": "3015",
+    "itemName": "해드상부커버(50C)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 20
+  },
+  {
+    "sourceKey": "부자재:3016",
+    "itemCode": "3016",
+    "itemName": "해드상부커버캡(50C)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "부자재:3017",
+    "itemCode": "3017",
+    "itemName": "해드상부커버(80)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "부자재:3018",
+    "itemCode": "3018",
+    "itemName": "해드상부커버캡(검정)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "부자재:3101",
+    "itemCode": "3101",
+    "itemName": "대형수전 하부 나사",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "부자재:3102",
+    "itemCode": "3102",
+    "itemName": "직결수도 하부 나사",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "부자재:3103",
+    "itemCode": "3103",
+    "itemName": "하부 나사선 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "부자재:3104",
+    "itemCode": "3104",
+    "itemName": "대형수전 하부 나사(롱)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 28
+  },
+  {
+    "sourceKey": "부자재:3105",
+    "itemCode": "3105",
+    "itemName": "수전하부 너트",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 29
+  },
+  {
+    "sourceKey": "부자재:3106",
+    "itemCode": "3106",
+    "itemName": "수전하부 너트 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 30
+  },
+  {
+    "sourceKey": "부자재:3107",
+    "itemCode": "3107",
+    "itemName": "수전상부 지지너트",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 31
+  },
+  {
+    "sourceKey": "부자재:3108",
+    "itemCode": "3108",
+    "itemName": "수전기둥 고정나사",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 32
+  },
+  {
+    "sourceKey": "부자재:3109",
+    "itemCode": "3109",
+    "itemName": "수전기둥 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 33
+  },
+  {
+    "sourceKey": "부자재:3110",
+    "itemCode": "3110",
+    "itemName": "수전컨트롤러",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 34
+  },
+  {
+    "sourceKey": "부자재:3111",
+    "itemCode": "3111",
+    "itemName": "컨트롤러 결합 플라스틱",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 35
+  },
+  {
+    "sourceKey": "부자재:3112",
+    "itemCode": "3112",
+    "itemName": "수전손잡이 오링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 36
+  },
+  {
+    "sourceKey": "부자재:3113",
+    "itemCode": "3113",
+    "itemName": "수전손잡이 커버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 37
+  },
+  {
+    "sourceKey": "부자재:3114",
+    "itemCode": "3114",
+    "itemName": "수전손잡이 결합 나사",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 38
+  },
+  {
+    "sourceKey": "부자재:3115",
+    "itemCode": "3115",
+    "itemName": "수전손잡이",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 39
+  },
+  {
+    "sourceKey": "부자재:3116",
+    "itemCode": "3116",
+    "itemName": "수전목 나사선 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 40
+  },
+  {
+    "sourceKey": "부자재:3117",
+    "itemCode": "3117",
+    "itemName": "수전 거름망 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 41
+  },
+  {
+    "sourceKey": "부자재:3118",
+    "itemCode": "3118",
+    "itemName": "수전거름망",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 42
+  },
+  {
+    "sourceKey": "부자재:3119",
+    "itemCode": "3119",
+    "itemName": "수전거름망 커버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 43
+  },
+  {
+    "sourceKey": "부자재:3120",
+    "itemCode": "3120",
+    "itemName": "수전인서트",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 44
+  },
+  {
+    "sourceKey": "부자재:3121",
+    "itemCode": "3121",
+    "itemName": "롱대",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 45
+  },
+  {
+    "sourceKey": "부자재:3122",
+    "itemCode": "3122",
+    "itemName": "롱대 기둥 고무",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 46
+  },
+  {
+    "sourceKey": "부자재:3123",
+    "itemCode": "3123",
+    "itemName": "어답터 고무링",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 47
+  },
+  {
+    "sourceKey": "부자재:3124",
+    "itemCode": "3124",
+    "itemName": "파우셋 구멍마개44mm",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 48
+  },
+  {
+    "sourceKey": "부자재:3125",
+    "itemCode": "3125",
+    "itemName": "파우셋 구멍마개20mm",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 49
+  },
+  {
+    "sourceKey": "부자재:3126",
+    "itemCode": "3126",
+    "itemName": "DW85필터 거치대",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 50
+  },
+  {
+    "sourceKey": "부자재:3127",
+    "itemCode": "3127",
+    "itemName": "DW85 해드",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 51
+  },
+  {
+    "sourceKey": "부자재:3128",
+    "itemCode": "3128",
+    "itemName": "볼탑(플라스틱)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 52
+  },
+  {
+    "sourceKey": "부자재:3129",
+    "itemCode": "3129",
+    "itemName": "볼탑(스텐)",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 53
+  },
+  {
+    "sourceKey": "부자재:3130",
+    "itemCode": "3130",
+    "itemName": "T100 온수레버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 54
+  },
+  {
+    "sourceKey": "부자재:3131",
+    "itemCode": "3131",
+    "itemName": "T100 냉정레버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 55
+  },
+  {
+    "sourceKey": "부자재:3132",
+    "itemCode": "3132",
+    "itemName": "T200 냉수레버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 56
+  },
+  {
+    "sourceKey": "부자재:3133",
+    "itemCode": "3133",
+    "itemName": "누수차단기",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 57
+  },
+  {
+    "sourceKey": "부자재:3201",
+    "itemCode": "3201",
+    "itemName": "현판 커버",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 60
+  },
+  {
+    "sourceKey": "부자재:3202",
+    "itemCode": "3202",
+    "itemName": "현판 본판",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 61
+  },
+  {
+    "sourceKey": "부자재:3203",
+    "itemCode": "3203",
+    "itemName": "현판고정 나사",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 62
+  },
+  {
+    "sourceKey": "부자재:3204",
+    "itemCode": "3204",
+    "itemName": "현판고정 볼트",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 63
+  },
+  {
+    "sourceKey": "부자재:3205",
+    "itemCode": "3205",
+    "itemName": "현판줄",
+    "abbreviation": "",
+    "category": "부자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 64
+  },
+  {
+    "sourceKey": "설치자재:4001",
+    "itemCode": "4001",
+    "itemName": "1/2튜빙",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "설치자재:4002",
+    "itemCode": "4002",
+    "itemName": "3/8튜빙",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "설치자재:4003",
+    "itemCode": "4003",
+    "itemName": "1/4튜빙",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "설치자재:4004",
+    "itemCode": "4004",
+    "itemName": "15A 주름관",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "설치자재:4005",
+    "itemCode": "4005",
+    "itemName": "20A 주름관",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "설치자재:4006",
+    "itemCode": "4006",
+    "itemName": "25A 주름관",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "설치자재:4007",
+    "itemCode": "4007",
+    "itemName": "PB 15A",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "설치자재:4008",
+    "itemCode": "4008",
+    "itemName": "PB 20A",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "설치자재:4101",
+    "itemCode": "4101",
+    "itemName": "15A 신주 고정엘보3p",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "설치자재:4102",
+    "itemCode": "4102",
+    "itemName": "15A 신주 소켓",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "설치자재:4103",
+    "itemCode": "4103",
+    "itemName": "15A 신주 엘보",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "설치자재:4104",
+    "itemCode": "4104",
+    "itemName": "15A 신주 티",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "설치자재:4105",
+    "itemCode": "4105",
+    "itemName": "15A 신주 볼벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "설치자재:4106",
+    "itemCode": "4106",
+    "itemName": "20A 신주볼벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 20
+  },
+  {
+    "sourceKey": "설치자재:4107",
+    "itemCode": "4107",
+    "itemName": "15A 신주 단니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "설치자재:4108",
+    "itemCode": "4108",
+    "itemName": "20A 신주 단니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "설치자재:4109",
+    "itemCode": "4109",
+    "itemName": "15A 신주 서비스 니플4CM",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "설치자재:4110",
+    "itemCode": "4110",
+    "itemName": "신주20A-15A변환 부싱",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 24
+  },
+  {
+    "sourceKey": "설치자재:4111",
+    "itemCode": "4111",
+    "itemName": "신주25A-20A변환 부싱",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "설치자재:4112",
+    "itemCode": "4112",
+    "itemName": "신주20A-15A변환 니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "설치자재:4113",
+    "itemCode": "4113",
+    "itemName": "신주25A-20A변환 니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "설치자재:4114",
+    "itemCode": "4114",
+    "itemName": "15A 주름관고정엘보(3p)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 28
+  },
+  {
+    "sourceKey": "설치자재:4115",
+    "itemCode": "4115",
+    "itemName": "15A 주름관 삼티",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 29
+  },
+  {
+    "sourceKey": "설치자재:4116",
+    "itemCode": "4116",
+    "itemName": "15A 주름관 속티",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 30
+  },
+  {
+    "sourceKey": "설치자재:4117",
+    "itemCode": "4117",
+    "itemName": "15A 주름관소켓(C*M)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 31
+  },
+  {
+    "sourceKey": "설치자재:4118",
+    "itemCode": "4118",
+    "itemName": "15A 주름관소켓(C*F)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 32
+  },
+  {
+    "sourceKey": "설치자재:4119",
+    "itemCode": "4119",
+    "itemName": "PB M소켓",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 33
+  },
+  {
+    "sourceKey": "설치자재:4120",
+    "itemCode": "4120",
+    "itemName": "PB F소켓",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 34
+  },
+  {
+    "sourceKey": "설치자재:4121",
+    "itemCode": "4121",
+    "itemName": "PB 티",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 35
+  },
+  {
+    "sourceKey": "설치자재:4122",
+    "itemCode": "4122",
+    "itemName": "PB 수전티",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 36
+  },
+  {
+    "sourceKey": "설치자재:4123",
+    "itemCode": "4123",
+    "itemName": "PB 슬리브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 37
+  },
+  {
+    "sourceKey": "설치자재:4124",
+    "itemCode": "4124",
+    "itemName": "어답터 3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 38
+  },
+  {
+    "sourceKey": "설치자재:4125",
+    "itemCode": "4125",
+    "itemName": "어답터 3/8(중)/(벽붙이형수전용)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 39
+  },
+  {
+    "sourceKey": "설치자재:4126",
+    "itemCode": "4126",
+    "itemName": "설치어답터 1/2(15A)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 40
+  },
+  {
+    "sourceKey": "설치자재:4127",
+    "itemCode": "4127",
+    "itemName": "정수기어답터(소)/(1/4)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 41
+  },
+  {
+    "sourceKey": "설치자재:4128",
+    "itemCode": "4128",
+    "itemName": "정수기어답터(중)/(1/4)(벽붙이형수전용)",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 42
+  },
+  {
+    "sourceKey": "설치자재:4129",
+    "itemCode": "4129",
+    "itemName": "1/2비데어답터",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 43
+  },
+  {
+    "sourceKey": "설치자재:4130",
+    "itemCode": "4130",
+    "itemName": "후레쉬벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 44
+  },
+  {
+    "sourceKey": "설치자재:4131",
+    "itemCode": "4131",
+    "itemName": "1/4 볼벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 45
+  },
+  {
+    "sourceKey": "설치자재:4132",
+    "itemCode": "4132",
+    "itemName": "1/4 감압기",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 46
+  },
+  {
+    "sourceKey": "설치자재:4133",
+    "itemCode": "4133",
+    "itemName": "15A 감압벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 47
+  },
+  {
+    "sourceKey": "설치자재:4134",
+    "itemCode": "4134",
+    "itemName": "20A 감압벨브",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 48
+  },
+  {
+    "sourceKey": "설치자재:4135",
+    "itemCode": "4135",
+    "itemName": "어답터(중)(벽붙이형수전용) 감압연결용 니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 49
+  },
+  {
+    "sourceKey": "설치자재:4136",
+    "itemCode": "4136",
+    "itemName": "어답터 3/8(중)(벽붙이형수전용) 감압연결용 니플",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 50
+  },
+  {
+    "sourceKey": "설치자재:4137",
+    "itemCode": "4137",
+    "itemName": "메꾸라15A",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 51
+  },
+  {
+    "sourceKey": "설치자재:4201",
+    "itemCode": "4201",
+    "itemName": "숫나사 1/2 호스1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 53
+  },
+  {
+    "sourceKey": "설치자재:4202",
+    "itemCode": "4202",
+    "itemName": "숫나사 1/2 호스3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 54
+  },
+  {
+    "sourceKey": "설치자재:4203",
+    "itemCode": "4203",
+    "itemName": "숫나사 1/2호스1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 55
+  },
+  {
+    "sourceKey": "설치자재:4204",
+    "itemCode": "4204",
+    "itemName": "암나사 1/2 호스1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 56
+  },
+  {
+    "sourceKey": "설치자재:4205",
+    "itemCode": "4205",
+    "itemName": "암나사 1/2 호스3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 57
+  },
+  {
+    "sourceKey": "설치자재:4206",
+    "itemCode": "4206",
+    "itemName": "인서트 1/2호스1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 58
+  },
+  {
+    "sourceKey": "설치자재:4207",
+    "itemCode": "4207",
+    "itemName": "인서트 1/2호스3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 59
+  },
+  {
+    "sourceKey": "설치자재:4208",
+    "itemCode": "4208",
+    "itemName": "인서트 3/8 호스3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 60
+  },
+  {
+    "sourceKey": "설치자재:4209",
+    "itemCode": "4209",
+    "itemName": "인서트 3/8 호스1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 61
+  },
+  {
+    "sourceKey": "설치자재:4210",
+    "itemCode": "4210",
+    "itemName": "티자 1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 62
+  },
+  {
+    "sourceKey": "설치자재:4211",
+    "itemCode": "4211",
+    "itemName": "티자 3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 63
+  },
+  {
+    "sourceKey": "설치자재:4212",
+    "itemCode": "4212",
+    "itemName": "티자 1/2-3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 64
+  },
+  {
+    "sourceKey": "설치자재:4213",
+    "itemCode": "4213",
+    "itemName": "티자 3/8-1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 65
+  },
+  {
+    "sourceKey": "설치자재:4214",
+    "itemCode": "4214",
+    "itemName": "십자 1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 66
+  },
+  {
+    "sourceKey": "설치자재:4215",
+    "itemCode": "4215",
+    "itemName": "십자 3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 67
+  },
+  {
+    "sourceKey": "설치자재:4216",
+    "itemCode": "4216",
+    "itemName": "십자 1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 68
+  },
+  {
+    "sourceKey": "설치자재:4217",
+    "itemCode": "4217",
+    "itemName": "DW85용 1/4피팅",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 69
+  },
+  {
+    "sourceKey": "설치자재:4218",
+    "itemCode": "4218",
+    "itemName": "ㄱ자 피팅 1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 70
+  },
+  {
+    "sourceKey": "설치자재:4219",
+    "itemCode": "4219",
+    "itemName": "피팅마개 1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 71
+  },
+  {
+    "sourceKey": "설치자재:4220",
+    "itemCode": "4220",
+    "itemName": "피팅마개 3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 72
+  },
+  {
+    "sourceKey": "설치자재:4221",
+    "itemCode": "4221",
+    "itemName": "피팅마개 1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 73
+  },
+  {
+    "sourceKey": "설치자재:4222",
+    "itemCode": "4222",
+    "itemName": "인서트마개 3/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 74
+  },
+  {
+    "sourceKey": "설치자재:4223",
+    "itemCode": "4223",
+    "itemName": "인서트마개 1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 75
+  },
+  {
+    "sourceKey": "설치자재:4224",
+    "itemCode": "4224",
+    "itemName": "3/4-1/2 변환부싱",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 76
+  },
+  {
+    "sourceKey": "설치자재:4225",
+    "itemCode": "4225",
+    "itemName": "락킹클립 1/2",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 77
+  },
+  {
+    "sourceKey": "설치자재:4226",
+    "itemCode": "4226",
+    "itemName": "락킹클립 3/8",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 78
+  },
+  {
+    "sourceKey": "설치자재:4227",
+    "itemCode": "4227",
+    "itemName": "락킹클립 1/4",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 79
+  },
+  {
+    "sourceKey": "설치자재:4301",
+    "itemCode": "4301",
+    "itemName": "필터결로커버",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 81
+  },
+  {
+    "sourceKey": "설치자재:4302",
+    "itemCode": "4302",
+    "itemName": "필터결로 하부 스펀지",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 82
+  },
+  {
+    "sourceKey": "설치자재:4303",
+    "itemCode": "4303",
+    "itemName": "필터결로 하부 테두리 스펀지",
+    "abbreviation": "",
+    "category": "설치자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 83
+  },
+  {
+    "sourceKey": "공구:5001",
+    "itemCode": "5001",
+    "itemName": "복스라쳇핸들",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "공구:5002",
+    "itemCode": "5002",
+    "itemName": "복스연결대",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "공구:5003",
+    "itemCode": "5003",
+    "itemName": "복스알 롱사이즈",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "공구:5004",
+    "itemCode": "5004",
+    "itemName": "하우징 해드분리용 지그",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "공구:5005",
+    "itemCode": "5005",
+    "itemName": "비데지그 ㄱ자",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "공구:5006",
+    "itemCode": "5006",
+    "itemName": "주름관 커팅기",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "공구:5007",
+    "itemCode": "5007",
+    "itemName": "PB관 커팅기",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "공구:5008",
+    "itemCode": "5008",
+    "itemName": "전지가위",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "공구:5009",
+    "itemCode": "5009",
+    "itemName": "압력게이지",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "공구:5010",
+    "itemCode": "5010",
+    "itemName": "대형몽키",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "공구:5011",
+    "itemCode": "5011",
+    "itemName": "주먹몽키",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "공구:5012",
+    "itemCode": "5012",
+    "itemName": "락킹플라이어",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "공구:5013",
+    "itemCode": "5013",
+    "itemName": "육각렌치 멀티",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "공구:5014",
+    "itemCode": "5014",
+    "itemName": "육각랜치 12mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "공구:5015",
+    "itemCode": "5015",
+    "itemName": "육각랜치 10mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 20
+  },
+  {
+    "sourceKey": "공구:5016",
+    "itemCode": "5016",
+    "itemName": "스텐기리3mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 21
+  },
+  {
+    "sourceKey": "공구:5017",
+    "itemCode": "5017",
+    "itemName": "스텐기리 5mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 22
+  },
+  {
+    "sourceKey": "공구:5018",
+    "itemCode": "5018",
+    "itemName": "멀티기리 5mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 23
+  },
+  {
+    "sourceKey": "공구:5019",
+    "itemCode": "5019",
+    "itemName": "콘크리트용드릴3mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 24
+  },
+  {
+    "sourceKey": "공구:5020",
+    "itemCode": "5020",
+    "itemName": "멀티석재기리 5mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 25
+  },
+  {
+    "sourceKey": "공구:5021",
+    "itemCode": "5021",
+    "itemName": "목공 롱기리 6mm 21mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 26
+  },
+  {
+    "sourceKey": "공구:5022",
+    "itemCode": "5022",
+    "itemName": "스탭드릴6각(확강기)",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 27
+  },
+  {
+    "sourceKey": "공구:5023",
+    "itemCode": "5023",
+    "itemName": "홀쏘12mm 소형수전설치용",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 28
+  },
+  {
+    "sourceKey": "공구:5024",
+    "itemCode": "5024",
+    "itemName": "홀쏘21mm 대형수전설치용",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 29
+  },
+  {
+    "sourceKey": "공구:5025",
+    "itemCode": "5025",
+    "itemName": "홀쏘 목공용 30mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 30
+  },
+  {
+    "sourceKey": "공구:5026",
+    "itemCode": "5026",
+    "itemName": "홀쏘 목공용 대형",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 31
+  },
+  {
+    "sourceKey": "공구:5001:2",
+    "itemCode": "5001",
+    "itemName": "새들 16mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 32
+  },
+  {
+    "sourceKey": "공구:5002:2",
+    "itemCode": "5002",
+    "itemName": "새들 20mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 33
+  },
+  {
+    "sourceKey": "공구:5003:2",
+    "itemCode": "5003",
+    "itemName": "새들 주름관용",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 34
+  },
+  {
+    "sourceKey": "공구:5004:2",
+    "itemCode": "5004",
+    "itemName": "칼블럭5mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 35
+  },
+  {
+    "sourceKey": "공구:5005:2",
+    "itemCode": "5005",
+    "itemName": "나사못3mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 36
+  },
+  {
+    "sourceKey": "공구:5006:2",
+    "itemCode": "5006",
+    "itemName": "양날 나사",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 37
+  },
+  {
+    "sourceKey": "공구:5007:2",
+    "itemCode": "5007",
+    "itemName": "외날 나사",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 38
+  },
+  {
+    "sourceKey": "공구:5008:2",
+    "itemCode": "5008",
+    "itemName": "테프론",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 39
+  },
+  {
+    "sourceKey": "공구:5009:2",
+    "itemCode": "5009",
+    "itemName": "타이밴드25mm",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 40
+  },
+  {
+    "sourceKey": "공구:5010:2",
+    "itemCode": "5010",
+    "itemName": "줄자",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 41
+  },
+  {
+    "sourceKey": "공구:5011:2",
+    "itemCode": "5011",
+    "itemName": "다용도21칸 수납함",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 42
+  },
+  {
+    "sourceKey": "공구:5012:2",
+    "itemCode": "5012",
+    "itemName": "가방(AS용)",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 43
+  },
+  {
+    "sourceKey": "공구:5013:2",
+    "itemCode": "5013",
+    "itemName": "가방(설치용)",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 44
+  },
+  {
+    "sourceKey": "공구:5014:2",
+    "itemCode": "5014",
+    "itemName": "구루마",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 45
+  },
+  {
+    "sourceKey": "공구:5015:2",
+    "itemCode": "5015",
+    "itemName": "사다리",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 46
+  },
+  {
+    "sourceKey": "공구:5016:2",
+    "itemCode": "5016",
+    "itemName": "장갑",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 47
+  },
+  {
+    "sourceKey": "공구:5017:2",
+    "itemCode": "5017",
+    "itemName": "마스크",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 48
+  },
+  {
+    "sourceKey": "공구:5018:2",
+    "itemCode": "5018",
+    "itemName": "겨울방한용 이불",
+    "abbreviation": "",
+    "category": "공구",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 49
+  },
+  {
+    "sourceKey": "관리자재:6001",
+    "itemCode": "6001",
+    "itemName": "수전청소용 칫솔",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "관리자재:6002",
+    "itemCode": "6002",
+    "itemName": "스팀살균기",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "관리자재:6003",
+    "itemCode": "6003",
+    "itemName": "위생티슈",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "관리자재:6004",
+    "itemCode": "6004",
+    "itemName": "건티슈",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "관리자재:6005",
+    "itemCode": "6005",
+    "itemName": "염소시약",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "관리자재:6006",
+    "itemCode": "6006",
+    "itemName": "염소시약통",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "관리자재:6007",
+    "itemCode": "6007",
+    "itemName": "무균병",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "관리자재:6008",
+    "itemCode": "6008",
+    "itemName": "종이컵",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "관리자재:6009",
+    "itemCode": "6009",
+    "itemName": "원수벨브스티커",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "관리자재:6010",
+    "itemCode": "6010",
+    "itemName": "관리주기표",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "관리자재:6011",
+    "itemCode": "6011",
+    "itemName": "관리주기표 케이스",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  },
+  {
+    "sourceKey": "관리자재:6012",
+    "itemCode": "6012",
+    "itemName": "계약서",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 17
+  },
+  {
+    "sourceKey": "관리자재:6013",
+    "itemCode": "6013",
+    "itemName": "위생업소 스티커",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 18
+  },
+  {
+    "sourceKey": "관리자재:6014",
+    "itemCode": "6014",
+    "itemName": "인주",
+    "abbreviation": "",
+    "category": "관리자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 19
+  },
+  {
+    "sourceKey": "박람회 자재:7001",
+    "itemCode": "7001",
+    "itemName": "워터펌프",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 6
+  },
+  {
+    "sourceKey": "박람회 자재:7002",
+    "itemCode": "7002",
+    "itemName": "물받이통",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 7
+  },
+  {
+    "sourceKey": "박람회 자재:7003",
+    "itemCode": "7003",
+    "itemName": "화구",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 8
+  },
+  {
+    "sourceKey": "박람회 자재:7004",
+    "itemCode": "7004",
+    "itemName": "싱크대",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 9
+  },
+  {
+    "sourceKey": "박람회 자재:7005",
+    "itemCode": "7005",
+    "itemName": "선반 소",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 10
+  },
+  {
+    "sourceKey": "박람회 자재:7006",
+    "itemCode": "7006",
+    "itemName": "선반 중",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 11
+  },
+  {
+    "sourceKey": "박람회 자재:7007",
+    "itemCode": "7007",
+    "itemName": "선반 대",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 12
+  },
+  {
+    "sourceKey": "박람회 자재:7008",
+    "itemCode": "7008",
+    "itemName": "티비",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 13
+  },
+  {
+    "sourceKey": "박람회 자재:7009",
+    "itemCode": "7009",
+    "itemName": "티비거치대",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 14
+  },
+  {
+    "sourceKey": "박람회 자재:7010",
+    "itemCode": "7010",
+    "itemName": "리모컨",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 15
+  },
+  {
+    "sourceKey": "박람회 자재:7011",
+    "itemCode": "7011",
+    "itemName": "멀티탭",
+    "abbreviation": "",
+    "category": "박람회 자재",
+    "specification": "",
+    "notes": "",
+    "sourceRow": 16
+  }
+]

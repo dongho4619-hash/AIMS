@@ -1,6 +1,19 @@
 # Anywater Integrated Management System
 
-기존 자재관리 프로그램과 분리된 통합업무관리 프로그램입니다. 이 폴더만 별도 저장소로 옮겨 독립 배포할 수 있습니다. 브라우저에서 `index.html`을 열면 고객·매장 조사·C/S·현장·재고·생산·통계 화면과 샘플 업무 흐름을 확인할 수 있습니다.
+사내 통합업무관리 프로그램입니다. 통합 로그인, 고객·매장, C/S, 현장 작업,
+생산·품질, 경영지원 업무와 자재관리 화면을 한 주소에서 제공합니다.
+
+## 구성
+
+- 통합 사이트 Worker: `anywater-integrated-management-system`
+- 통합업무 D1: `anywater-integrated-management-system-db`
+- 자재관리 내부 서비스: `anywater-inventory-integrated-service`
+- 자재관리 D1: 기존 `anywater-inventory-db` 재사용
+- 내부 서비스 바인딩: `INVENTORY_SERVICE`
+
+기존 자재관리 원본 사이트와 Worker는 수정하거나 교체하지 않습니다. 통합 사이트는
+로그인한 사용자만 내부 자재관리 서비스에 연결하며, 자재관리에서 별도 로그인을
+요구하지 않습니다.
 
 ## 로컬 실행
 
@@ -9,31 +22,33 @@ cd integrated-workflow-mvp
 npm run dev
 ```
 
-접속 주소: `http://localhost:4173`
+로컬 주소는 `http://localhost:4173`입니다. 로컬에서는 Cloudflare의 실제 D1과
+내부 서비스 연결이 없으므로 통합 로그인과 자재관리 데이터는 배포 주소에서
+확인해야 합니다.
 
-## Cloudflare Workers + D1 독립 배포
+## 배포 순서
 
-이 프로그램은 기존 재고 프로그램과 다른 Workers 프로젝트와 전용 D1 데이터베이스로 배포합니다.
+먼저 자재관리 내부 서비스를 빌드하고 배포합니다.
+
+```powershell
+cd integrated-inventory-service
+npm run build
+npx wrangler deploy
+```
+
+그 다음 통합 사이트를 배포합니다.
 
 ```powershell
 cd integrated-workflow-mvp
-npx wrangler login
-npx wrangler d1 create anywater-integrated-workflow-db
-# 위 명령이 반환한 database_id를 wrangler.toml에 입력
-npx wrangler d1 execute anywater-integrated-workflow-db --remote --file=schema.sql
-npm run deploy
+npx wrangler deploy --config wrangler.toml
 ```
 
-`anywater-integrated-workflow`라는 별도 Worker와 전용 D1 데이터베이스가 생성되며, 기존 재고 프로그램의 Worker·D1 데이터베이스와 분리됩니다. 실제 회사 데이터가 연결되기 전에는 샘플 데이터만 노출해야 합니다.
+배포 주소:
+`https://anywater-integrated-management-system.dongho4619.workers.dev`
 
-## 운영 전환 순서
+## 보안
 
-1. 별도 GitHub 저장소 생성
-2. Cloudflare Pages 별도 프로젝트 생성
-3. 정식 로그인·부서/역할 권한 구현
-4. D1에 업무·고객·계약·미납·회계보조 데이터를 별도 저장
-5. R2에 사진·서명·첨부파일 저장
-6. 문자 발송업체와 CMS 사업자 API 연결
-7. 샘플 데이터 제거 후 내부 사용자 시범운영
-
-현재 버전은 화면과 업무 흐름을 검토하면서 D1 저장 API를 연결할 수 있는 MVP입니다. 기존 재고 프로그램의 DB와 코드를 수정하지 않으며, 운영 전환 시 서버 검증 재고원장, 정식 로그인·권한, 파일 저장소, 감사이력이 필요합니다.
+- `.env`, `.dev.vars`, API 키와 인증 파일은 Git에 포함하지 않습니다.
+- 자재관리 내부 서비스는 `workers_dev = false`로 외부 공개 주소가 없습니다.
+- 통합 사이트가 확인한 사용자 정보만 내부 서비스에 전달합니다.
+- 자재관리 경로와 통합 업무 API는 로그인하지 않으면 `401`을 반환합니다.

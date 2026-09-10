@@ -1,0 +1,10 @@
+.wrangler/
+.git/
+.gitignore
+.dev.vars
+.env*
+node_modules/
+schema.sql
+wrangler.toml
+worker.js
+*.map

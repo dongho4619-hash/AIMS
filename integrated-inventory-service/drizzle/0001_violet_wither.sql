@@ -1,0 +1,2 @@
+CREATE INDEX `idx_material_requests_status_created` ON `material_requests` (`status`,`created_at`);--> statement-breakpoint
+CREATE INDEX `idx_material_requests_department` ON `material_requests` (`department`);

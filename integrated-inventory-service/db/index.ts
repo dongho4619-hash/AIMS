@@ -1,0 +1,160 @@
+import { env } from "cloudflare:workers";
+import { drizzle } from "drizzle-orm/d1";
+import catalog from "../data/materials.json";
+import * as schema from "./schema";
+
+const CATALOG_VERSION = "anywater-2026-08-20-v3";
+
+function getBinding() {
+  if (!env.DB) throw new Error("Cloudflare D1 binding `DB` is unavailable.");
+  return env.DB;
+}
+
+export function getD1() {
+  return getBinding();
+}
+
+export function getDb() {
+  return drizzle(getBinding(), { schema });
+}
+
+export async function ensureDatabase() {
+  const d1 = getBinding();
+  await d1.batch([
+    d1.prepare(`CREATE TABLE IF NOT EXISTS materials (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      source_key TEXT NOT NULL UNIQUE,
+      item_code TEXT,
+      item_name TEXT NOT NULL,
+      abbreviation TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL,
+      specification TEXT NOT NULL DEFAULT '',
+      notes TEXT NOT NULL DEFAULT '',
+      unit TEXT NOT NULL DEFAULT 'EA',
+      minimum_stock INTEGER NOT NULL DEFAULT 0,
+      active INTEGER NOT NULL DEFAULT 1,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      sort_order INTEGER NOT NULL DEFAULT 999999
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_category_name ON materials (category, item_name)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_item_code ON materials (item_code)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_materials_category_sort ON materials (category, sort_order)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS catalog_meta (
+      id INTEGER PRIMARY KEY CHECK (id = 1),
+      version TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      request_number TEXT NOT NULL UNIQUE,
+      material_source_key TEXT,
+      item_name TEXT NOT NULL,
+      specification TEXT NOT NULL DEFAULT '',
+      quantity INTEGER NOT NULL CHECK (quantity > 0),
+      unit TEXT NOT NULL DEFAULT 'EA',
+      requester TEXT NOT NULL,
+      requester_key TEXT,
+      department TEXT NOT NULL,
+      required_date TEXT NOT NULL,
+      purpose TEXT NOT NULL DEFAULT '',
+      urgency TEXT NOT NULL DEFAULT 'normal',
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_status_created ON material_requests (status, created_at DESC)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_requests_department ON material_requests (department)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS request_edits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      request_id INTEGER NOT NULL,
+      editor_user_key TEXT NOT NULL,
+      changed_fields TEXT NOT NULL,
+      previous_values TEXT NOT NULL,
+      new_values TEXT NOT NULL,
+      edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_request_edits_request_time ON request_edits (request_id, edited_at DESC)"),
+    d1.prepare("CREATE TRIGGER IF NOT EXISTS prevent_request_edits_delete BEFORE DELETE ON request_edits BEGIN SELECT RAISE(ABORT, 'request edit history is immutable'); END"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS personal_inventory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_key TEXT NOT NULL,
+      material_source_key TEXT NOT NULL,
+      quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_personal_inventory_user_material ON personal_inventory (user_key, material_source_key)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_returns (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, return_number TEXT NOT NULL UNIQUE,
+      requester_key TEXT NOT NULL, requester_name TEXT NOT NULL, department TEXT NOT NULL,
+      material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
+      unit TEXT NOT NULL DEFAULT 'EA', reason TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'pending',
+      rejection_reason TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      decided_at TEXT, decided_by TEXT
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_returns_status_created ON material_returns (status, created_at DESC)"),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_returns_requester_created ON material_returns (requester_key, created_at DESC)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS inventory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, material_source_key TEXT NOT NULL UNIQUE,
+      on_hand INTEGER NOT NULL DEFAULT 0 CHECK (on_hand >= 0), reserved INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS app_users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE, email TEXT NOT NULL,
+      display_name TEXT NOT NULL DEFAULT '', department TEXT NOT NULL DEFAULT '기술부',
+      role TEXT NOT NULL DEFAULT 'user', active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS user_profiles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL UNIQUE,
+      employee_id TEXT NOT NULL DEFAULT '', is_admin INTEGER NOT NULL DEFAULT 0, can_view_admin INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_usages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
+      material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),
+      store_name TEXT NOT NULL, used_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usages_user_date ON material_usages (user_key, used_date DESC)"),
+    d1.prepare(`CREATE TABLE IF NOT EXISTS material_usage_edits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, usage_id INTEGER NOT NULL, editor_user_key TEXT NOT NULL,
+      changed_fields TEXT NOT NULL, previous_values TEXT NOT NULL, new_values TEXT NOT NULL,
+      edited_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_material_usage_edits_usage_time ON material_usage_edits (usage_id, edited_at DESC)"),
+    d1.prepare("CREATE TRIGGER IF NOT EXISTS prevent_material_usage_edits_delete BEFORE DELETE ON material_usage_edits BEGIN SELECT RAISE(ABORT, 'usage edit history is immutable'); END"),
+  ]);
+
+  const current = await d1.prepare("SELECT version FROM catalog_meta WHERE id = 1").first<{ version: string }>();
+  if (current?.version === CATALOG_VERSION) return;
+
+  await d1.prepare("UPDATE materials SET active = 0").run();
+  const upsertSql = `INSERT INTO materials (
+    source_key, item_code, item_name, abbreviation, category, specification, notes, sort_order, active, updated_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
+  ON CONFLICT(source_key) DO UPDATE SET
+    item_code = excluded.item_code,
+    item_name = excluded.item_name,
+    abbreviation = excluded.abbreviation,
+    category = excluded.category,
+    specification = excluded.specification,
+    notes = excluded.notes,
+    sort_order = excluded.sort_order,
+    active = 1,
+    updated_at = CURRENT_TIMESTAMP`;
+  for (let index = 0; index < catalog.length; index += 75) {
+    const chunk = catalog.slice(index, index + 75);
+    await d1.batch(chunk.map((item) => d1.prepare(upsertSql).bind(
+      item.sourceKey,
+      item.itemCode,
+      item.itemName,
+      item.abbreviation,
+      item.category,
+      item.specification,
+      item.notes,
+      item.sourceRow,
+    )));
+  }
+  await d1.prepare(`INSERT INTO catalog_meta (id, version, updated_at) VALUES (1, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(id) DO UPDATE SET version = excluded.version, updated_at = CURRENT_TIMESTAMP`).bind(CATALOG_VERSION).run();
+}
