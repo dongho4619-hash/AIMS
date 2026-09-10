@@ -18,7 +18,7 @@ async function digestPassword(password, salt) {
   const encoded = new TextEncoder().encode(password);
   const saltBytes = Uint8Array.from(atob(salt), char => char.charCodeAt(0));
   const key = await crypto.subtle.importKey("raw", encoded, "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: saltBytes, iterations: 120000, hash: "SHA-256" }, key, 256);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: saltBytes, iterations: 100000, hash: "SHA-256" }, key, 256);
   return btoa(String.fromCharCode(...new Uint8Array(bits)));
 }
 
@@ -57,10 +57,15 @@ export default {
         const displayName = String(body.displayName || "관리자").trim() || "관리자";
         if (!/^[a-z0-9._-]{3,30}$/.test(username) || password.length < 8) return json({ error: "아이디는 영문·숫자 3자 이상, 비밀번호는 8자 이상이어야 합니다." }, 400);
         if (password !== passwordConfirm) return json({ error: "비밀번호가 서로 일치하지 않습니다." }, 400);
-        const salt = newSalt();
-        const hash = await digestPassword(password, salt);
-        await env.DB.prepare("INSERT INTO auth_users (username, password_hash, password_salt, display_name, role, created_at, updated_at) VALUES (?, ?, ?, ?, 'admin', ?, ?)").bind(username, hash, salt, displayName, now, now).run();
-        return json({ created: true, username }, 201);
+        try {
+          const salt = newSalt();
+          const hash = await digestPassword(password, salt);
+          await env.DB.prepare("INSERT INTO auth_users (username, password_hash, password_salt, display_name, role, created_at, updated_at) VALUES (?, ?, ?, ?, 'admin', ?, ?)").bind(username, hash, salt, displayName, now, now).run();
+          return json({ created: true, username }, 201);
+        } catch (error) {
+          console.error("Admin setup failed", error);
+          return json({ error: "관리자 계정을 저장하지 못했습니다.", code: "ADMIN_SETUP_FAILED" }, 500);
+        }
       }
       if (url.pathname === "/api/auth/login" && request.method === "POST") {
         const body = await request.json();
