@@ -71,6 +71,21 @@ export default {
         await env.DB.prepare("INSERT INTO auth_sessions (token, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)").bind(token, user.id, expires, now).run();
         return new Response(JSON.stringify({ authenticated: true, user: { username: user.username, displayName: user.display_name, role: user.role, isAdmin: user.role === "admin" } }), { status: 200, headers: { "content-type": "application/json; charset=utf-8", "set-cookie": sessionCookie(token) } });
       }
+      if (url.pathname === "/api/auth/change-password" && request.method === "POST") {
+        const user = await authUser(request, env);
+        if (!user) return json({ error: "로그인이 필요합니다." }, 401);
+        const body = await request.json();
+        const currentPassword = String(body.currentPassword || "");
+        const newPassword = String(body.newPassword || "");
+        const account = await env.DB.prepare("SELECT password_hash, password_salt FROM auth_users WHERE id = ? AND active = 1").bind(user.id).first();
+        if (!account || await digestPassword(currentPassword, account.password_salt) !== account.password_hash) return json({ error: "현재 비밀번호가 올바르지 않습니다." }, 401);
+        if (newPassword.length < 8) return json({ error: "새 비밀번호는 8자 이상이어야 합니다." }, 400);
+        const salt = newSalt();
+        const hash = await digestPassword(newPassword, salt);
+        await env.DB.prepare("UPDATE auth_users SET password_hash = ?, password_salt = ?, updated_at = ? WHERE id = ?").bind(hash, salt, now, user.id).run();
+        await env.DB.prepare("DELETE FROM auth_sessions WHERE user_id = ? AND token != ?").bind(user.id, cookieValue(request, "aw_session")).run();
+        return json({ changed: true });
+      }
       if (url.pathname === "/api/auth/logout" && request.method === "POST") {
         const token = cookieValue(request, "aw_session");
         if (token) await env.DB.prepare("DELETE FROM auth_sessions WHERE token = ?").bind(token).run();
