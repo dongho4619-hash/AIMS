@@ -109,6 +109,7 @@ export async function ensureDatabase() {
       employee_id TEXT NOT NULL DEFAULT '', is_admin INTEGER NOT NULL DEFAULT 0, can_view_admin INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`),
+    d1.prepare("CREATE INDEX IF NOT EXISTS idx_user_profiles_employee_id ON user_profiles (employee_id)"),
     d1.prepare(`CREATE TABLE IF NOT EXISTS material_usages (
       id INTEGER PRIMARY KEY AUTOINCREMENT, user_key TEXT NOT NULL, employee_id TEXT NOT NULL,
       material_source_key TEXT NOT NULL, item_name TEXT NOT NULL, quantity INTEGER NOT NULL CHECK (quantity > 0),

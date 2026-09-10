@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -19,9 +20,11 @@ const PERCENT_ENCODED_UTF8 = "percent-encoded-utf-8";
 
 export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
   const requestHeaders = await headers();
-  const userId = requestHeaders.get(USER_ID_HEADER);
+  const forwardedUserId = requestHeaders.get(USER_ID_HEADER);
   const email = requestHeaders.get(USER_EMAIL_HEADER);
-  if (!userId || !email) return null;
+  if (!forwardedUserId || !email) return null;
+  const employeeId = requestHeaders.get("x-aims-username")?.trim() || email.split("@")[0];
+  const existingUserKey = await findExistingUserKey(employeeId);
 
   const encodedFullName = requestHeaders.get(USER_FULL_NAME_HEADER);
   const fullName =
@@ -31,13 +34,25 @@ export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
       : null;
 
   return {
-    userId,
+    userId: existingUserKey || forwardedUserId,
     displayName: fullName ?? email,
     email,
     fullName,
-    employeeId: requestHeaders.get("x-aims-username")?.trim() || email.split("@")[0],
+    employeeId,
     isAdmin: requestHeaders.get("x-aims-role") === "admin",
   };
+}
+
+async function findExistingUserKey(employeeId: string): Promise<string | null> {
+  if (!employeeId || !env.DB) return null;
+  try {
+    const profile = await env.DB.prepare(
+      "SELECT user_key FROM user_profiles WHERE lower(employee_id) = lower(?) ORDER BY id ASC LIMIT 1",
+    ).bind(employeeId).first<{ user_key: string }>();
+    return profile?.user_key || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function requireChatGPTUser(returnTo: string): Promise<ChatGPTUser> {
